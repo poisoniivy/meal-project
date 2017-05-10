@@ -193,7 +193,7 @@ class RecipeIngredient(db.Model):
     recipes = db.relationship("Recipe",
         backref=db.backref("recipe_ingredients", order_by=recipe_ing_id))
 
-    ingredient = db.relationship("Category",
+    ingredient = db.relationship("Ingredient",
         backref=db.backref("recipe_ingredients", order_by=recipe_ing_id))
 
     unit = db.relationship("Unit",

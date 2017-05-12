@@ -1,16 +1,15 @@
-teaspoon|tsp
-tablespoon|tbsp
-fluid ounce|fl oz
-gill|
-cup|c
-pint|pt
-quart|qt
-gallon|gal
-milliliter|ml
-liter|l
-deciliter|dL
-pound|lb
-ounce|oz
-milligram|mg
-gram|g
-kilogram|g
+tsp|teaspoon|teaspoons
+Tbsp|tablespoons|tablespoons
+fl oz|fluid ounce|fluid ounces
+c|cup|cups
+pt|pint|pints
+qt|quart|quarts
+gal|gallon|gallons
+ml|milliliter|milliliters
+L|liter|liters
+dL|deciliter|deciliters
+lb|pound|pounds
+oz|ounce|ounces
+mg|milligram|milligrams
+g|gram|grams
+kg|kilogram|kilograms

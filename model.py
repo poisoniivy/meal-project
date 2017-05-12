@@ -50,12 +50,12 @@ class MealType(db.Model):
 
     __tablename__ = "meal_types"
 
-    meal_type_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    type_name = db.Column(db.String, nullable=False)
+    meal_type_id = db.Column(db.String(5), primary_key=True)
+    type_name = db.Column(db.String(15), nullable=False)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
-        return "<meal_id=%s type_name=%s>" % (self.meal_type_id,
+        return "<meal_type_id=%s type_name=%s>" % (self.meal_type_id,
                                                 self.type_name)
 
 
@@ -66,7 +66,7 @@ class Meal(db.Model):
 
     meal_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     week_id = db.Column(db.Integer, db.ForeignKey('weeks.week_id'), nullable=False)
-    meal_type_id = db.Column(db.Integer, db.ForeignKey('meal_types.meal_type_id'),
+    meal_type_id = db.Column(db.String(5), db.ForeignKey('meal_types.meal_type_id'),
         nullable=False)
     meal_date = db.Column(db.DateTime, nullable=False)
 
@@ -83,7 +83,7 @@ class Meal(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
         s = "<Meal meal_id=%s meal_type=%s date=%s>"
-        return s % (self.meal_id, self.meal_type, self.meal_date)
+        return s % (self.meal_id, self.meal_type.type_name, self.meal_date)
 
 
 class MealRecipe(db.Model):
@@ -116,8 +116,11 @@ class Recipe(db.Model):
 
     recipe_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     recipe_name = db.Column(db.String, nullable=False)
-    img_url = db.Column(db.String(150), nullable=True)
+    recipe_url = db.Column(db.String(150), nullable=True)
     directions = db.Column(db.String(10000), nullable=True)
+    vegetarian = db.Column(db.Boolean, nullable=True)
+    has_dairy = db.Column(db.Boolean, nullable=True)
+    has_gluten = db.Column(db.Boolean, nullable=True)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -130,8 +133,9 @@ class Unit(db.Model):
 
     __tablename__ = "units"
 
-    unit_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    unit_name = db.Column(db.String(20), nullable=False)
+    unit_id = db.Column(db.String(5), primary_key=True)
+    unit_short = db.Column(db.String(20), nullable=False)
+    unit_long = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -145,7 +149,7 @@ class Category(db.Model):
     __tablename__ = "categories"
 
     category_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    category_name = db.Column(db.String(50), nullable=False)
+    category_name = db.Column(db.String(75), nullable=False)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -162,10 +166,7 @@ class Ingredient(db.Model):
     ingredient_name = db.Column(db.String(50), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.category_id'),
         nullable=True)
-    has_nuts = db.Column(db.Boolean, nullable=True)
-    has_dairy = db.Column(db.Boolean, nullable=True)
-    has_gluten = db.Column(db.Boolean, nullable=True)
-    need_whole_number = db.Column(db.Boolean, nullable=True)
+    ingredient_url = db.Column(db.String(150), nullable=True)
 
     category = db.relationship("Category",
         backref=db.backref("ingredients", order_by=ingredient_id))
@@ -186,9 +187,10 @@ class RecipeIngredient(db.Model):
         db.ForeignKey('recipes.recipe_id'), nullable=False)
     ingredient_id = db.Column(db.Integer,
         db.ForeignKey('ingredients.ingredient_id'), nullable=False)
-    unit_id = db.Column(db.Integer,
+    unit_id = db.Column(db.String(5),
         db.ForeignKey('units.unit_id'), nullable=True)
-    qty = db.Column(db.Float, nullable=True)
+    amt = db.Column(db.Float, nullable=True)
+    need_whole_number = db.Column(db.Boolean, nullable=True)
 
     recipes = db.relationship("Recipe",
         backref=db.backref("recipe_ingredients", order_by=recipe_ing_id))

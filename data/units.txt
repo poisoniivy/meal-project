@@ -13,3 +13,5 @@ oz|ounce|ounces
 mg|milligram|milligrams
 g|gram|grams
 kg|kilogram|kilograms
+w|whole|whole
+p|piece|pieces

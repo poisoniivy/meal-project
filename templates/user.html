@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+
+{% block title %} My Account {% endblock %}
+
+{% block content %}
+
+<h1>Welcome to your Meal Planner</h1>
+
+<h2>Hi {{ user.user_name }}! </h2>
+
+<h2>Go to your Meal Plan</h2>
+<p><a href="/mealplan">Mealplan</a></p>
+
+<h2>Look at your Recipe Box</h2>
+<p><a href="/recipes">Recipes</a></p>
+
+<h2>Go to your Shopping List</h2>
+<p><a href="/shoppinglist">Shopping List</a></p>
+
+{% endblock %}

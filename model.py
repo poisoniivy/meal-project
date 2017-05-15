@@ -16,8 +16,11 @@ class User(db.Model):
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     email = db.Column(db.String(64), nullable=False, unique=True)
     password = db.Column(db.String(64), nullable=False)
-    # age = db.Column(db.Integer, nullable=True)
-    # zipcode = db.Column(db.String(15), nullable=True)
+    user_name = db.Column(db.String(24), nullable=False, unique=True)
+
+    recipes = db.relationship("Recipe",
+                             secondary="user_recipes",
+                             backref="users")
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -126,6 +129,29 @@ class Recipe(db.Model):
         """Provide helpful representation when printed."""
         return "<recipe_id=%s recipe_name=%s>" % (self.recipe_id,
                                                 self.recipe_name)
+
+
+class UserRecipe(db.Model):
+    """Connecting each user to a recipe."""
+
+    __tablename__ = "user_recipes"
+
+    user_recipe_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'),
+        nullable=False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.recipe_id'),
+        nullable=False)
+
+    users = db.relationship("User",
+        backref=db.backref("user_recipes", order_by=user_recipe_id))
+
+    recipes = db.relationship("Recipe",
+        backref=db.backref("user_recipes", order_by=user_recipe_id))
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+        s = "<user_recipe_id=%s recipe_id=%s user_id=%s>"
+        return s % (self.user_recipe_id, self.recipe_id, self.user_id)
 
 
 class Unit(db.Model):

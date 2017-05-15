@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 
-{% block title %}Homepage{% endblock %}
+{% block title %} Homepage {% endblock %}
 
 {% block content %}
 
@@ -11,6 +11,11 @@
 <p><a href="/register">Register Here!</a></p>
 
 <h2>Login</h2>
-<p><a href="/login">Login Here!</a></p>
+
+<form action="/login" method="POST">
+  Email Address: <input type="email" name="email" id="email"><br>
+  Password: <input type="password" name="password" id="password"><br>
+  <input type="submit" name="submit">
+</form>
 
 {% endblock %}

@@ -6,6 +6,10 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import *
 
+from datetime import date
+
+import datetime
+
 
 app = Flask(__name__)
 
@@ -107,10 +111,105 @@ def show_meal_plan():
     # Checking if user is logged in
     if 'user_name' in session:
         user = User.query.filter(User.user_name==session['user_name']).one()
-        return render_template("mealplan.html", user=user)
+
+        today = date.today()
+        display_week = Meal.query.filter(Meal.meal_date==today).all()[0].week_id
+
+        # Currently the week starts on a Sunday
+        start_date = date.today() - datetime.timedelta(days=(date.today().weekday()+1))
+        # Listing out days of the week to display in one week's mealplan
+        all_days = [start_date,
+                    start_date + datetime.timedelta(days=1),
+                    start_date + datetime.timedelta(days=2),
+                    start_date + datetime.timedelta(days=3),
+                    start_date + datetime.timedelta(days=4),
+                    start_date + datetime.timedelta(days=5),
+                    start_date + datetime.timedelta(days=6)]
+
+        meal_plan = create_meal_plan(display_week, all_days)
+        return render_template("mealplan.html",
+                                all_days=all_days,
+                                meal_plan=meal_plan)
     else:
         flash("You need to log in to access this page.")
         redirect("/")
+
+
+
+def create_meal_plan(week_id, all_days):
+    meal_plan_list = []
+
+    # Creating a meal-plan-list based on days
+    # i = 1
+    # for day in all_days:
+    #     meal_dict = {}
+    #     meal_dict["day"] = i
+
+    #     br_list = Meal.query.filter(Meal.week_id==week_id,
+    #                     Meal.meal_date==day,
+    #                     Meal.meal_type_id=="br").one().recipes
+    #     meal_dict["breakfast"] = br_list
+
+    #     lu_list = Meal.query.filter(Meal.week_id==week_id,
+    #                     Meal.meal_date==day,
+    #                     Meal.meal_type_id=="lu").one().recipes
+    #     meal_dict["lunch"] = lu_list
+
+    #     din_list = Meal.query.filter(Meal.week_id==week_id,
+    #                     Meal.meal_date==day,
+    #                     Meal.meal_type_id=="din").one().recipes
+    #     meal_dict["dinner"] = din_list
+
+    #     snack_list = Meal.query.filter(Meal.week_id==week_id,
+    #                     Meal.meal_date==day,
+    #                     Meal.meal_type_id=="snck").one().recipes
+    #     meal_dict["snack"] = snack_list
+
+    #     i += 1
+    #     meal_plan_list.append(meal_dict)
+
+    # Creating a meal-plan-dictionary based on meals -> easier to display
+    breakfast_meals = Meal.query.filter(Meal.week_id==2,
+            Meal.meal_type_id=="br").order_by(Meal.meal_date).all()
+    br_dict = {}
+    br_dict["meal_type"] = "breakfast"
+    i = 1
+    for meal in breakfast_meals:
+        br_dict["day" + str(i)] = meal.recipes
+        i += 1
+    meal_plan_list.append(br_dict)
+
+    lunch_meals = Meal.query.filter(Meal.week_id==2,
+            Meal.meal_type_id=="lu").order_by(Meal.meal_date).all()
+    lu_dict = {}
+    lu_dict["meal_type"] = "lunch"
+    i = 1
+    for meal in lunch_meals:
+        lu_dict["day" + str(i)] = meal.recipes
+        i += 1
+    meal_plan_list.append(lu_dict)
+
+    dinner_meals = Meal.query.filter(Meal.week_id==2,
+            Meal.meal_type_id=="din").order_by(Meal.meal_date).all()
+    din_dict = {}
+    din_dict["meal_type"] = "dinner"
+    i = 1
+    for meal in dinner_meals:
+        din_dict["day" + str(i)] = meal.recipes
+        i += 1
+    meal_plan_list.append(din_dict)
+
+    snack_meals = Meal.query.filter(Meal.week_id==2,
+            Meal.meal_type_id=="snck").order_by(Meal.meal_date).all()
+    snack_dict = {}
+    snack_dict["meal_type"] = "snack"
+    i = 1
+    for meal in snack_meals:
+        snack_dict["day" + str(i)] = meal.recipes
+        i += 1
+    meal_plan_list.append(snack_dict)
+
+    return meal_plan_list
 
 
 @app.route('/recipes')
@@ -125,6 +224,11 @@ def show_recipes():
     else:
         flash("You need to log in to access this page.")
         redirect("/")
+
+
+@app.route('/recipes/<recipe_id>')
+def show_recipe_info():
+    pass
 
 
 @app.route('/shoppinglist')

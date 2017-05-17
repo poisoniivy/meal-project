@@ -2,12 +2,89 @@
 
 
 {% block title %} My Meal Plan {% endblock %}
+{% block style %} 
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+{% endblock %}
 
 {% block content %}
 
 <h1>Meal Plan</h1>
 
+<div #meal-plan-table>
+<table style="width:80%">
+    <tr>
+        <th>Meal</th>
+        {% for day in all_days %}
+            <th>{{ day.strftime('%a %-m/%d') }} </th>
+        {% endfor %}
+    </tr>
+    {% for meal in meal_plan %}
+    <tr>
+        <td>{{ meal["meal_type"]|capitalize() }} </td>
+        <td>
+            {% for recipe in meal["day1"] %}
+                <p>{{ recipe.recipe_name|capitalize() }}</p>
+            {% endfor %}
+        </td>
+        <td>
+            {% for recipe in meal["day2"] %}
+                <p>{{ recipe.recipe_name|capitalize() }}</p>
+            {% endfor %}
+        </td>
+        <td>
+            {% for recipe in meal["day3"] %}
+                <p>{{ recipe.recipe_name|capitalize() }}</p>
+            {% endfor %}
+        </td>
+        <td>
+            {% for recipe in meal["day4"] %}
+                <p>{{ recipe.recipe_name|capitalize() }}</p>
+            {% endfor %}
+        </td>
+        <td>
+            {% for recipe in meal["day5"] %}
+                <p>{{ recipe.recipe_name|capitalize() }}</p>
+            {% endfor %}
+        </td>
+        <td>
+            {% for recipe in meal["day6"] %}
+                <p>{{ recipe.recipe_name|capitalize() }}</p>
+            {% endfor %}
+        </td>
+        <td>
+            {% for recipe in meal["day7"] %}
+                <p>{{ recipe.recipe_name|capitalize() }}</p>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
 
+<form>
+    <input type="button" name="edit" id="edit-meal" value="Edit Meal Plan">
+</form>
 
+<script>
+    $('#edit-meal').click(addRecipeForm)
+
+    
+</script>
 
 {% endblock %}

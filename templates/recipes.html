@@ -11,8 +11,7 @@
   {% for recipe in recipes %}
       <li>
           <a href="/recipes/{{ recipe.recipe_id }}">
-            <!-- {% set {{ recipe.recipe_name }} = ''%} -->
-            {{ recipe.recipe_name }}
+            {{ recipe.recipe_name|capitalize() }}
           </a>
       </li>
   {% endfor %}

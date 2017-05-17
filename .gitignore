@@ -1,2 +1,6 @@
 env
 *.pyc
+api.py
+data.py
+data/ingredients3.txt
+tests.py

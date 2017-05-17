@@ -111,6 +111,7 @@ def show_meal_plan():
     # Checking if user is logged in
     if 'user_name' in session:
         user = User.query.filter(User.user_name==session['user_name']).one()
+        all_recipes = user.recipes
 
         today = date.today()
         display_week = Meal.query.filter(Meal.meal_date==today).all()[0].week_id
@@ -129,7 +130,8 @@ def show_meal_plan():
         meal_plan = create_meal_plan(display_week, all_days)
         return render_template("mealplan.html",
                                 all_days=all_days,
-                                meal_plan=meal_plan)
+                                meal_plan=meal_plan,
+                                all_recipes=all_recipes)
     else:
         flash("You need to log in to access this page.")
         redirect("/")
@@ -175,7 +177,10 @@ def create_meal_plan(week_id, all_days):
     br_dict["meal_type"] = "breakfast"
     i = 1
     for meal in breakfast_meals:
-        br_dict["day" + str(i)] = meal.recipes
+        meal_list = meal.recipes
+        while len(meal_list) < 4:
+            meal_list = meal_list + ['']
+        br_dict["day" + str(i)] = meal_list
         i += 1
     meal_plan_list.append(br_dict)
 
@@ -185,7 +190,10 @@ def create_meal_plan(week_id, all_days):
     lu_dict["meal_type"] = "lunch"
     i = 1
     for meal in lunch_meals:
-        lu_dict["day" + str(i)] = meal.recipes
+        meal_list = meal.recipes
+        while len(meal_list) < 4:
+            meal_list = meal_list + ['']
+        lu_dict["day" + str(i)] = meal_list
         i += 1
     meal_plan_list.append(lu_dict)
 
@@ -195,7 +203,10 @@ def create_meal_plan(week_id, all_days):
     din_dict["meal_type"] = "dinner"
     i = 1
     for meal in dinner_meals:
-        din_dict["day" + str(i)] = meal.recipes
+        meal_list = meal.recipes
+        while len(meal_list) < 4:
+            meal_list = meal_list + ['']
+        din_dict["day" + str(i)] = meal_list
         i += 1
     meal_plan_list.append(din_dict)
 
@@ -205,7 +216,10 @@ def create_meal_plan(week_id, all_days):
     snack_dict["meal_type"] = "snack"
     i = 1
     for meal in snack_meals:
-        snack_dict["day" + str(i)] = meal.recipes
+        meal_list = meal.recipes
+        while len(meal_list) < 4:
+            meal_list = meal_list + ['']
+        snack_dict["day" + str(i)] = meal_list
         i += 1
     meal_plan_list.append(snack_dict)
 

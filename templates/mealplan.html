@@ -26,7 +26,9 @@ tr:nth-child(even) {
 
 <h1>Meal Plan</h1>
 
-<div #meal-plan-table>
+<form action="/edit-meal" class="edit" id="meal-plan-form">
+
+<div id="meal-plan-table">
 <table style="width:80%">
     <tr>
         <th>Meal</th>
@@ -34,57 +36,293 @@ tr:nth-child(even) {
             <th>{{ day.strftime('%a %-m/%d') }} </th>
         {% endfor %}
     </tr>
+
+    <div id="edit-meal-plan">
     {% for meal in meal_plan %}
     <tr>
         <td>{{ meal["meal_type"]|capitalize() }} </td>
         <td>
             {% for recipe in meal["day1"] %}
-                <p>{{ recipe.recipe_name|capitalize() }}</p>
+                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                {% if recipe != '' %}
+
+                    {% for r in all_recipes %}
+                        {% if r.recipe_id == recipe.recipe_id %}
+                            <option value="{{ recipe.recipe_id }}" selected>
+                                {{ recipe.recipe_name|capitalize() }}
+                            </option>
+                        {% else %}
+                            <option value="{{ r.recipe_id }}">
+                                {{ r.recipe_name|capitalize() }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+
+                {% else %}
+                    <option value="" selected> </option>
+                    {% for r in all_recipes %}
+                    <option value="{{ r.recipe_id }}">
+                        {{ r.recipe_name|capitalize() }}
+                    </option>
+                    {% endfor %}
+                {% endif %}
+                </select>
+                
+                <div class="show-meal-plan">
+                {% if recipe != '' %}
+                    <p>{{ recipe.recipe_name|capitalize() }}</p>
+                {% endif %}
+                </div>
+                
             {% endfor %}
         </td>
         <td>
             {% for recipe in meal["day2"] %}
-                <p>{{ recipe.recipe_name|capitalize() }}</p>
+                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                {% if recipe != '' %}
+
+                    {% for r in all_recipes %}
+                        {% if r.recipe_id == recipe.recipe_id %}
+                            <option value="{{ recipe.recipe_id }}" selected>
+                                {{ recipe.recipe_name|capitalize() }}
+                            </option>
+                        {% else %}
+                            <option value="{{ r.recipe_id }}">
+                                {{ r.recipe_name|capitalize() }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+
+                {% else %}
+                    <option value="" selected> </option>
+                    {% for r in all_recipes %}
+                    <option value="{{ r.recipe_id }}">
+                        {{ r.recipe_name|capitalize() }}
+                    </option>
+                    {% endfor %}
+                {% endif %}
+                </select>
+                
+                <div class="show-meal-plan">
+                {% if recipe != '' %}
+                    <p>{{ recipe.recipe_name|capitalize() }}</p>
+                {% endif %}
+                </div>
+
             {% endfor %}
         </td>
         <td>
             {% for recipe in meal["day3"] %}
-                <p>{{ recipe.recipe_name|capitalize() }}</p>
+                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                {% if recipe != '' %}
+
+                    {% for r in all_recipes %}
+                        {% if r.recipe_id == recipe.recipe_id %}
+                            <option value="{{ recipe.recipe_id }}" selected>
+                                {{ recipe.recipe_name|capitalize() }}
+                            </option>
+                        {% else %}
+                            <option value="{{ r.recipe_id }}">
+                                {{ r.recipe_name|capitalize() }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+
+                {% else %}
+                    <option value="" selected> </option>
+                    {% for r in all_recipes %}
+                    <option value="{{ r.recipe_id }}">
+                        {{ r.recipe_name|capitalize() }}
+                    </option>
+                    {% endfor %}
+                {% endif %}
+                </select>
+                
+                <div class="show-meal-plan">
+                {% if recipe != '' %}
+                    <p>{{ recipe.recipe_name|capitalize() }}</p>
+                {% endif %}
+                </div>
             {% endfor %}
         </td>
         <td>
             {% for recipe in meal["day4"] %}
-                <p>{{ recipe.recipe_name|capitalize() }}</p>
+                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                {% if recipe != '' %}
+
+                    {% for r in all_recipes %}
+                        {% if r.recipe_id == recipe.recipe_id %}
+                            <option value="{{ recipe.recipe_id }}" selected>
+                                {{ recipe.recipe_name|capitalize() }}
+                            </option>
+                        {% else %}
+                            <option value="{{ r.recipe_id }}">
+                                {{ r.recipe_name|capitalize() }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+
+                {% else %}
+                    <option value="" selected> </option>
+                    {% for r in all_recipes %}
+                    <option value="{{ r.recipe_id }}">
+                        {{ r.recipe_name|capitalize() }}
+                    </option>
+                    {% endfor %}
+                {% endif %}
+                </select>
+                
+                <div class="show-meal-plan">
+                {% if recipe != '' %}
+                    <p>{{ recipe.recipe_name|capitalize() }}</p>
+                {% endif %}
+                </div>
             {% endfor %}
         </td>
         <td>
             {% for recipe in meal["day5"] %}
-                <p>{{ recipe.recipe_name|capitalize() }}</p>
+                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                {% if recipe != '' %}
+
+                    {% for r in all_recipes %}
+                        {% if r.recipe_id == recipe.recipe_id %}
+                            <option value="{{ recipe.recipe_id }}" selected>
+                                {{ recipe.recipe_name|capitalize() }}
+                            </option>
+                        {% else %}
+                            <option value="{{ r.recipe_id }}">
+                                {{ r.recipe_name|capitalize() }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+
+                {% else %}
+                    <option value="" selected> </option>
+                    {% for r in all_recipes %}
+                    <option value="{{ r.recipe_id }}">
+                        {{ r.recipe_name|capitalize() }}
+                    </option>
+                    {% endfor %}
+                {% endif %}
+                </select>
+                
+                <div class="show-meal-plan">
+                {% if recipe != '' %}
+                    <p>{{ recipe.recipe_name|capitalize() }}</p>
+                {% endif %}
+                </div>
             {% endfor %}
         </td>
         <td>
             {% for recipe in meal["day6"] %}
-                <p>{{ recipe.recipe_name|capitalize() }}</p>
+                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                {% if recipe != '' %}
+
+                    {% for r in all_recipes %}
+                        {% if r.recipe_id == recipe.recipe_id %}
+                            <option value="{{ recipe.recipe_id }}" selected>
+                                {{ recipe.recipe_name|capitalize() }}
+                            </option>
+                        {% else %}
+                            <option value="{{ r.recipe_id }}">
+                                {{ r.recipe_name|capitalize() }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+
+                {% else %}
+                    <option value="" selected> </option>
+                    {% for r in all_recipes %}
+                    <option value="{{ r.recipe_id }}">
+                        {{ r.recipe_name|capitalize() }}
+                    </option>
+                    {% endfor %}
+                {% endif %}
+                </select>
+                
+                <div class="show-meal-plan">
+                {% if recipe != '' %}
+                    <p>{{ recipe.recipe_name|capitalize() }}</p>
+                {% endif %}
+                </div>
             {% endfor %}
         </td>
         <td>
             {% for recipe in meal["day7"] %}
-                <p>{{ recipe.recipe_name|capitalize() }}</p>
+                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                {% if recipe != '' %}
+
+                    {% for r in all_recipes %}
+                        {% if r.recipe_id == recipe.recipe_id %}
+                            <option value="{{ recipe.recipe_id }}" selected>
+                                {{ recipe.recipe_name|capitalize() }}
+                            </option>
+                        {% else %}
+                            <option value="{{ r.recipe_id }}">
+                                {{ r.recipe_name|capitalize() }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+
+                {% else %}
+                    <option value="" selected> </option>
+                    {% for r in all_recipes %}
+                    <option value="{{ r.recipe_id }}">
+                        {{ r.recipe_name|capitalize() }}
+                    </option>
+                    {% endfor %}
+                {% endif %}
+                </select>
+                
+                <div class="show-meal-plan">
+                {% if recipe != '' %}
+                    <p>{{ recipe.recipe_name|capitalize() }}</p>
+                {% endif %}
+                </div>
             {% endfor %}
         </td>
     </tr>
     {% endfor %}
+    </div>
+
   </table>
 </div>
 
-<form>
-    <input type="button" name="edit" id="edit-meal" value="Edit Meal Plan">
+    <input type="submit" name="edit" id="meal-btn" value="Edit Meal Plan">
 </form>
 
-<script>
-    $('#edit-meal').click(addRecipeForm)
+<script src="https://code.jquery.com/jquery.js"></script>
 
-    
+<script>
+
+    // Setting up page when the page is loaded
+    $(document).ready(function() {
+        $('div.show-meal-plan').show();
+        $('select.recipe-dropdown').hide();
+    });
+
+    // Event handler when you click on the meal-plan page button
+    $('#meal-plan-form').on("submit", addRecipeForm);
+
+    function addRecipeForm(evt) {
+        evt.preventDefault();
+
+        var button = $('#meal-btn').val();
+
+        if (button == "Edit Meal Plan") {
+            $('div.show-meal-plan').hide()
+            $('select.recipe-dropdown').show()
+            $('#meal-btn').val("Save Meal Plan");
+        }
+        else {
+             // POST into DB
+            $('select.recipe-dropdown').hide()
+            $('div.show-meal-plan').show()
+            $('#meal-btn').val("Edit Meal Plan");
+        }
+    }
+
+
 </script>
 
 {% endblock %}

@@ -137,6 +137,61 @@ def show_meal_plan():
         redirect("/")
 
 
+@app.route('/editplan', methods=["POST"])
+def edit_meal_plan():
+    """Edits Meal plan, modifies DB with new meals, returns user to mealpage."""
+    if 'user_name' in session:
+        user = User.query.filter(User.user_name==session['user_name']).one()
+        all_recipes = user.recipes
+
+        today = date.today()
+        display_week = Meal.query.filter(Meal.meal_date==today).all()[0].week_id
+
+        # Currently the week starts on a Sunday
+        start_date = date.today() - datetime.timedelta(days=(date.today().weekday()+1))
+        # Listing out days of the week to display in one week's mealplan
+        all_days = [start_date,
+                    start_date + datetime.timedelta(days=1),
+                    start_date + datetime.timedelta(days=2),
+                    start_date + datetime.timedelta(days=3),
+                    start_date + datetime.timedelta(days=4),
+                    start_date + datetime.timedelta(days=5),
+                    start_date + datetime.timedelta(days=6)]
+
+        meal_plan = create_meal_plan(display_week, all_days)
+        return render_template("mealplan.html",
+                                all_days=all_days,
+                                meal_plan=meal_plan,
+                                all_recipes=all_recipes)
+    else:
+        flash("You need to log in to access this page.")
+        redirect("/")
+
+
+@app.route('/recipes')
+def show_recipes():
+    """Shows list of all user's recipes."""
+    # Checking if user is logged in
+    if 'user_name' in session:
+        user_name = session['user_name']
+        user = User.query.filter(User.user_name==user_name).one()
+        recipes = user.recipes
+        return render_template("recipes.html", user=user, recipes=recipes)
+    else:
+        flash("You need to log in to access this page.")
+        redirect("/")
+
+
+@app.route('/recipes/<recipe_id>')
+def show_recipe_info():
+    pass
+
+
+@app.route('/shoppinglist')
+def show_shopping_list():
+    """shows users shopping list."""
+    pass
+
 
 def create_meal_plan(week_id, all_days):
     meal_plan_list = []
@@ -224,31 +279,6 @@ def create_meal_plan(week_id, all_days):
     meal_plan_list.append(snack_dict)
 
     return meal_plan_list
-
-
-@app.route('/recipes')
-def show_recipes():
-    """Shows list of all user's recipes."""
-    # Checking if user is logged in
-    if 'user_name' in session:
-        user_name = session['user_name']
-        user = User.query.filter(User.user_name==user_name).one()
-        recipes = user.recipes
-        return render_template("recipes.html", user=user, recipes=recipes)
-    else:
-        flash("You need to log in to access this page.")
-        redirect("/")
-
-
-@app.route('/recipes/<recipe_id>')
-def show_recipe_info():
-    pass
-
-
-@app.route('/shoppinglist')
-def show_shopping_list():
-    """shows users shopping list."""
-    pass
 
 
 if __name__ == "__main__":

@@ -43,7 +43,8 @@ tr:nth-child(even) {
         <td>{{ meal["meal_type"]|capitalize() }} </td>
         <td>
             {% for recipe in meal["day1"] %}
-                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                <select name="day1-{{ meal['meal_type'] }}" 
+                    class="recipe-dropdown day1-{{ meal['meal_type'] }}">
                 {% if recipe != '' %}
 
                     {% for r in all_recipes %}
@@ -73,12 +74,13 @@ tr:nth-child(even) {
                     <p>{{ recipe.recipe_name|capitalize() }}</p>
                 {% endif %}
                 </div>
-                
+
             {% endfor %}
         </td>
         <td>
             {% for recipe in meal["day2"] %}
-                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                <select name="day2-{{ meal['meal_type'] }}" 
+                    class="recipe-dropdown day2-{{ meal['meal_type'] }}">
                 {% if recipe != '' %}
 
                     {% for r in all_recipes %}
@@ -113,7 +115,8 @@ tr:nth-child(even) {
         </td>
         <td>
             {% for recipe in meal["day3"] %}
-                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                <select name="day3-{{ meal['meal_type'] }}" 
+                    class="recipe-dropdown day3-{{ meal['meal_type'] }}">
                 {% if recipe != '' %}
 
                     {% for r in all_recipes %}
@@ -147,7 +150,8 @@ tr:nth-child(even) {
         </td>
         <td>
             {% for recipe in meal["day4"] %}
-                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                <select name="day4-{{ meal['meal_type'] }}"
+                    class="recipe-dropdown day4-{{ meal['meal_type'] }}">
                 {% if recipe != '' %}
 
                     {% for r in all_recipes %}
@@ -181,7 +185,8 @@ tr:nth-child(even) {
         </td>
         <td>
             {% for recipe in meal["day5"] %}
-                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                <select name="day5-{{ meal['meal_type'] }}" 
+                    class="recipe-dropdown day5-{{ meal['meal_type'] }}">
                 {% if recipe != '' %}
 
                     {% for r in all_recipes %}
@@ -215,7 +220,8 @@ tr:nth-child(even) {
         </td>
         <td>
             {% for recipe in meal["day6"] %}
-                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                <select name="day6-{{ meal['meal_type'] }}"
+                    class="recipe-dropdown day6-{{ meal['meal_type'] }}">
                 {% if recipe != '' %}
 
                     {% for r in all_recipes %}
@@ -249,7 +255,8 @@ tr:nth-child(even) {
         </td>
         <td>
             {% for recipe in meal["day7"] %}
-                <select name="day2"+meal["meal_type"] class="recipe-dropdown">
+                <select name="day7-{{ meal['meal_type'] }}" 
+                    class="recipe-dropdown day7-{{ meal['meal_type'] }}">
                 {% if recipe != '' %}
 
                     {% for r in all_recipes %}
@@ -320,6 +327,19 @@ tr:nth-child(even) {
             $('div.show-meal-plan').show()
             $('#meal-btn').val("Edit Meal Plan");
         }
+    }
+
+    function getFormInfo() {
+
+        var options = $('select.day1-breakfast')
+
+        var recipeList = [];
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].value != "") {
+                recipeList.push(options[i].value);  
+            }
+        }
+        return true
     }
 
 

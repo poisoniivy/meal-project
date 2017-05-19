@@ -137,15 +137,19 @@ def show_meal_plan():
         redirect("/")
 
 
-@app.route('/editplan', methods=["POST"])
+@app.route('/edit-plan', methods=["POST"])
 def edit_meal_plan():
     """Edits Meal plan, modifies DB with new meals, returns user to mealpage."""
     if 'user_name' in session:
+
+        print "Got into edit-plan function!!!"
+
         user = User.query.filter(User.user_name==session['user_name']).one()
         all_recipes = user.recipes
 
+        # Getting info out of the json from post request
         today = date.today()
-        display_week = Meal.query.filter(Meal.meal_date==today).all()[0].week_id
+        week_id = Meal.query.filter(Meal.meal_date==today).all()[0].week_id
 
         # Currently the week starts on a Sunday
         start_date = date.today() - datetime.timedelta(days=(date.today().weekday()+1))
@@ -158,11 +162,27 @@ def edit_meal_plan():
                     start_date + datetime.timedelta(days=5),
                     start_date + datetime.timedelta(days=6)]
 
-        meal_plan = create_meal_plan(display_week, all_days)
-        return render_template("mealplan.html",
-                                all_days=all_days,
-                                meal_plan=meal_plan,
-                                all_recipes=all_recipes)
+        import pdb; pdb.set_trace()
+        print request.get_json('day1')
+        i = 1
+        while i <= 7:
+            day = request.json["day"+str(i)]
+
+            # import pdb; pdb.set_trace()
+            # if day["breakfast"] == None:
+            #     pass
+            # else:
+            #     recipe_list = day["breakfast"]
+            #     meal_type = "br"
+            #     meal_id = Meal.query.filter(Meal.week_id==week_id,
+            #                                 Meal.meal_type_id==meal_type,
+            #                                 Meal.meal_date==all_days[i-1])
+            #     for r_id in recipe_list:
+            #         new_meal_recipe = MealRecipe(recipe_id=r_id, meal_id=meal_id)
+            #         db.session.add(new_meal_recipe)
+            i += 1
+        db.session.commit()
+        flash("Your meal has been saved.")
     else:
         flash("You need to log in to access this page.")
         redirect("/")

@@ -26,7 +26,7 @@ tr:nth-child(even) {
 
 <h1>Meal Plan</h1>
 
-<form action="/edit-meal" class="edit" id="meal-plan-form">
+<form action="/edit-plan" class="edit" id="meal-plan-form">
 
 <div id="meal-plan-table">
 <table style="width:80%">
@@ -37,7 +37,6 @@ tr:nth-child(even) {
         {% endfor %}
     </tr>
 
-    <div id="edit-meal-plan">
     {% for meal in meal_plan %}
     <tr>
         <td>{{ meal["meal_type"]|capitalize() }} </td>
@@ -290,7 +289,6 @@ tr:nth-child(even) {
         </td>
     </tr>
     {% endfor %}
-    </div>
 
   </table>
 </div>
@@ -301,6 +299,11 @@ tr:nth-child(even) {
 <script src="https://code.jquery.com/jquery.js"></script>
 
 <script>
+
+    // function setupPage() {
+    //     $('select.recipe-dropdown').hide();
+    //     $('div.show-meal-plan').show();
+    // }
 
     // Setting up page when the page is loaded
     $(document).ready(function() {
@@ -326,22 +329,59 @@ tr:nth-child(even) {
             $('select.recipe-dropdown').hide()
             $('div.show-meal-plan').show()
             $('#meal-btn').val("Edit Meal Plan");
+
+            formData = getFormInfo();
+            console.log("JSONstringify: " + JSON.stringify(formData));
+            // $.post("/edit-plan", JSON.stringify(formData), showMealPlan, "json");
+            $.ajax({
+                url:"/edit-plan",
+                type:"POST",
+                data:JSON.stringify(formData),
+                contentType:"application/json; charset=utf-8",
+                dataType:"json",
+                showMealPlan
+            });
+
         }
+    }
+
+    function showMealPlan(data) {
+        $('select.recipe-dropdown').hide();
+        $('div.show-meal-plan').show();
     }
 
     function getFormInfo() {
 
-        var options = $('select.day1-breakfast')
+        var formInfo = new Object();
 
-        var recipeList = [];
-        for (var i = 0; i < options.length; i++) {
-            if (options[i].value != "") {
-                recipeList.push(options[i].value);  
-            }
-        }
-        return true
+        for (var i = 1; i <= 7; i++) {
+            
+            var mealObject = new Object();
+
+            var breakfastOptions = $('select.day'+i+'-breakfast');
+            var lunchOptions = $('select.day'+i+'-lunch');
+            var dinnerOptions = $('select.day'+i+'-dinner');
+            var snackOptions = $('select.day'+i+'-snacks');
+
+            mealObject["breakfast"] = createMealList(breakfastOptions);
+            mealObject["lunch"] = createMealList(lunchOptions);
+            mealObject["dinner"] = createMealList(dinnerOptions);
+            mealObject["snacks"] = createMealList(snackOptions);
+
+            formInfo["day"+i] = mealObject;
+        }   
+        return formInfo;
     }
 
+    function createMealList(options) {
+        var recipeList = [];
+        for (var j = 0; j < options.length; j++) {
+            if (options[j].value != "") {
+                recipeList.push(options[j].value);  
+            }
+        }
+        return recipeList;
+    }
 
 </script>
 

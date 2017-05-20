@@ -142,10 +142,7 @@ def edit_meal_plan():
     """Edits Meal plan, modifies DB with new meals, returns user to mealpage."""
     if 'user_name' in session:
 
-        print "Got into edit-plan function!!!"
-
         user = User.query.filter(User.user_name==session['user_name']).one()
-        all_recipes = user.recipes
 
         # Getting info out of the json from post request
         today = date.today()
@@ -162,30 +159,55 @@ def edit_meal_plan():
                     start_date + datetime.timedelta(days=5),
                     start_date + datetime.timedelta(days=6)]
 
-        import pdb; pdb.set_trace()
-        print request.get_json('day1')
+        # import pdb; pdb.set_trace()
+
         i = 1
         while i <= 7:
             day = request.json["day"+str(i)]
+            meal_date = all_days[i-1]
 
             # import pdb; pdb.set_trace()
-            # if day["breakfast"] == None:
-            #     pass
-            # else:
-            #     recipe_list = day["breakfast"]
-            #     meal_type = "br"
-            #     meal_id = Meal.query.filter(Meal.week_id==week_id,
-            #                                 Meal.meal_type_id==meal_type,
-            #                                 Meal.meal_date==all_days[i-1])
-            #     for r_id in recipe_list:
-            #         new_meal_recipe = MealRecipe(recipe_id=r_id, meal_id=meal_id)
-            #         db.session.add(new_meal_recipe)
+            if day["breakfast"] != []:
+                add_recipes("br", day["breakfast"], week_id, meal_date)
+            if day["lunch"] != []:
+                add_recipes("lu", day["lunch"], week_id, meal_date)
+            if day["dinner"] != []:
+                add_recipes("din", day["dinner"], week_id, meal_date)
+            if day["snacks"] != []:
+                add_recipe("snck", day["snacks"], week_id, meal_date)
             i += 1
-        db.session.commit()
+
+        meal_plan = create_meal_plan(week_id, all_days)
+        all_recipes = user.recipes
+
         flash("Your meal has been saved.")
+
+        return render_template("mealplan.html",
+                        all_days=all_days,
+                        meal_plan=meal_plan,
+                        all_recipes=all_recipes)
+
     else:
         flash("You need to log in to access this page.")
         redirect("/")
+
+
+
+def add_recipes(meal_type_id, recipe_list, week_id, meal_date):
+    """ Adds meal_recipes to database for meal plan."""
+    meal_id = Meal.query.filter(Meal.week_id==week_id,
+                                Meal.meal_type_id==meal_type_id,
+                                Meal.meal_date==meal_date).one().meal_id
+    for r_id in recipe_list:
+        # Need to check with the meal_recipe_id does not already exist:
+        if MealRecipe.query.filter(MealRecipe.meal_id==meal_id,
+                                    MealRecipe.recipe_id==r_id).all() == []:
+            print "Adding a meal recipe", meal_id, r_id
+            new_meal_recipe = MealRecipe(recipe_id=r_id, meal_id=meal_id)
+            db.session.add(new_meal_recipe)
+
+    db.session.commit()
+
 
 
 @app.route('/recipes')
@@ -215,35 +237,6 @@ def show_shopping_list():
 
 def create_meal_plan(week_id, all_days):
     meal_plan_list = []
-
-    # Creating a meal-plan-list based on days
-    # i = 1
-    # for day in all_days:
-    #     meal_dict = {}
-    #     meal_dict["day"] = i
-
-    #     br_list = Meal.query.filter(Meal.week_id==week_id,
-    #                     Meal.meal_date==day,
-    #                     Meal.meal_type_id=="br").one().recipes
-    #     meal_dict["breakfast"] = br_list
-
-    #     lu_list = Meal.query.filter(Meal.week_id==week_id,
-    #                     Meal.meal_date==day,
-    #                     Meal.meal_type_id=="lu").one().recipes
-    #     meal_dict["lunch"] = lu_list
-
-    #     din_list = Meal.query.filter(Meal.week_id==week_id,
-    #                     Meal.meal_date==day,
-    #                     Meal.meal_type_id=="din").one().recipes
-    #     meal_dict["dinner"] = din_list
-
-    #     snack_list = Meal.query.filter(Meal.week_id==week_id,
-    #                     Meal.meal_date==day,
-    #                     Meal.meal_type_id=="snck").one().recipes
-    #     meal_dict["snack"] = snack_list
-
-    #     i += 1
-    #     meal_plan_list.append(meal_dict)
 
     # Creating a meal-plan-dictionary based on meals -> easier to display
     breakfast_meals = Meal.query.filter(Meal.week_id==2,
@@ -299,6 +292,36 @@ def create_meal_plan(week_id, all_days):
     meal_plan_list.append(snack_dict)
 
     return meal_plan_list
+
+    # Creating a meal-plan-list based on days
+    # i = 1
+    # for day in all_days:
+    #     meal_dict = {}
+    #     meal_dict["day"] = i
+
+    #     br_list = Meal.query.filter(Meal.week_id==week_id,
+    #                     Meal.meal_date==day,
+    #                     Meal.meal_type_id=="br").one().recipes
+    #     meal_dict["breakfast"] = br_list
+
+    #     lu_list = Meal.query.filter(Meal.week_id==week_id,
+    #                     Meal.meal_date==day,
+    #                     Meal.meal_type_id=="lu").one().recipes
+    #     meal_dict["lunch"] = lu_list
+
+    #     din_list = Meal.query.filter(Meal.week_id==week_id,
+    #                     Meal.meal_date==day,
+    #                     Meal.meal_type_id=="din").one().recipes
+    #     meal_dict["dinner"] = din_list
+
+    #     snack_list = Meal.query.filter(Meal.week_id==week_id,
+    #                     Meal.meal_date==day,
+    #                     Meal.meal_type_id=="snck").one().recipes
+    #     meal_dict["snack"] = snack_list
+
+    #     i += 1
+    #     meal_plan_list.append(meal_dict)
+
 
 
 if __name__ == "__main__":

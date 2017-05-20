@@ -20,6 +20,10 @@ tr:nth-child(even) {
     background-color: #dddddd;
 }
 
+.recipe-dropdown {
+    display: none;
+}
+
 {% endblock %}
 
 {% block content %}
@@ -299,11 +303,6 @@ tr:nth-child(even) {
 <script src="https://code.jquery.com/jquery.js"></script>
 
 <script>
-
-    // function setupPage() {
-    //     $('select.recipe-dropdown').hide();
-    //     $('div.show-meal-plan').show();
-    // }
 
     // Setting up page when the page is loaded
     $(document).ready(function() {

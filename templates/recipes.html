@@ -7,15 +7,82 @@
 
 <h1>Here's a list of all your recipes</h1>
 
-<ul>
-  {% for recipe in recipes %}
-      <li>
-          <a href="/recipes/{{ recipe.recipe_id }}">
-            {{ recipe.recipe_name|capitalize() }}
-          </a>
-      </li>
-  {% endfor %}
-</ul>
+<div>
+    <div>
+        <div>
+            <button type="button" id="recipes-btn-all">All</button>
+            <button type="button" id="recipes-btn-br">Breakfast</button>
+            <button type="button" id="recipes-btn-lu">Lunch</button>
+            <button type="button" id="recipes-btn-din">Dinner</button>
+            <button type="button" id="recipes-btn-snck">Snacks</button>
+        </div>
+        <div>
+            <ul id="recipe-list">
 
+            </ul>
+        </div>
+    </div>
+    <div id="show-recipe-info">
+    </div>
+</div>
+
+<script>
+
+    $("#recipes-btn-br").on("click", function() {showRecipes("br"); });
+    $("#recipes-btn-lu").on("click", function() { showRecipes("lun"); });
+    $("#recipes-btn-din").on("click", function() { showRecipes("din"); });
+    $("#recipes-btn-snck").on("click", function() { showRecipes("snck"); });
+
+    $("#recipes-btn-all").on("click", showAll);
+
+    $(document).ready(showAll);
+
+    function showAll() {
+        $("#recipe-list").html("");
+        var htmlText = "{% for recipe in recipes %}" +
+                "<li><a href='/recipes/{{ recipe.recipe_id }}' " +
+                "onclick='showRecipeInfo( {{ recipe.recipe_id}} )'>" +
+                    "{{ recipe.recipe_name|capitalize() }} </a></li>" +
+            "{% endfor %}";
+        $("#recipe-list").append(htmlText);
+    }
+
+    function showRecipes(meal_type) {
+        console.log("In showRecipes function");
+        // debugger
+
+        $("#recipe-list").html("");
+
+        var mealList;
+
+        $.get('/show-filter-recipes.json', 
+                {'meal_type':meal_type}, 
+                printRecipes);
+    }
+
+    function printRecipes(data) {
+        if (data.length == 0) {
+            $("#recipe-list").append("<p>There are no recipes for this meal.</p>");
+        }
+        else {
+            for (var i = 0; i<data.length; i++) {
+                $("#recipe-list").append("<li><a href='/recipes/" + data[i].id + "'>" + 
+                        capitalize(data[i].name) +  "</a></li>");
+            }
+        }
+    }
+
+    function showRecipeInfo(recipeID) {
+        var recipeHref = $("")
+        var recipeInfo = $.get('/recipes/' + recipeID)
+        return ""
+    }
+
+    function capitalize(s) {
+        return s[0].toUpperCase() + s.slice(1);
+    }
+
+  
+</script>
 
 {% endblock %}

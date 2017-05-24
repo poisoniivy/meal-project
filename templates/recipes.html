@@ -8,7 +8,7 @@
 <h1>Here's a list of all your recipes</h1>
 
 <div>
-    <div>
+    <div style="display: inline-block">
         <div>
             <button type="button" id="recipes-btn-all">All</button>
             <button type="button" id="recipes-btn-br">Breakfast</button>
@@ -18,17 +18,22 @@
         </div>
         <div>
             <ul id="recipe-list">
-
             </ul>
         </div>
     </div>
-    <div id="show-recipe-info">
+    <div style="display: inline-block">
+        <p class="show-recipe-info" id="recipe-name">Recipe Name: </p>
+        <p class="show-recipe-info" id="recipe-directions">Directions: </p>
+        <p class="show-recipe-info" id="recipe-has-dairy">Dairy: </p>
+        <p class="show-recipe-info" id="recipe-has-gluten">Gluten: </p>
+        <p class="show-recipe-info" id="recipe-vegetarian">Vegetarian: </p>
+        <p class="show-recipe-info" id="recipe-ingredients">Ingredients: </p>
     </div>
 </div>
 
 <script>
 
-    $("#recipes-btn-br").on("click", function() {showRecipes("br"); });
+    $("#recipes-btn-br").on("click", function() { showRecipes("br"); });
     $("#recipes-btn-lu").on("click", function() { showRecipes("lun"); });
     $("#recipes-btn-din").on("click", function() { showRecipes("din"); });
     $("#recipes-btn-snck").on("click", function() { showRecipes("snck"); });
@@ -39,21 +44,19 @@
 
     function showAll() {
         $("#recipe-list").html("");
+        $(".show-recipe-info").hide();
         var htmlText = "{% for recipe in recipes %}" +
                 "<li><a href='/recipes/{{ recipe.recipe_id }}' " +
-                "onclick='showRecipeInfo( {{ recipe.recipe_id}} )'>" +
+                "onclick='showRecipeInfo(event, {{ recipe.recipe_id}} );'>" +
                     "{{ recipe.recipe_name|capitalize() }} </a></li>" +
             "{% endfor %}";
         $("#recipe-list").append(htmlText);
     }
 
     function showRecipes(meal_type) {
-        console.log("In showRecipes function");
         // debugger
-
+        $(".show-recipe-info").hide();
         $("#recipe-list").html("");
-
-        var mealList;
 
         $.get('/show-filter-recipes.json', 
                 {'meal_type':meal_type}, 
@@ -66,16 +69,32 @@
         }
         else {
             for (var i = 0; i<data.length; i++) {
-                $("#recipe-list").append("<li><a href='/recipes/" + data[i].id + "'>" + 
-                        capitalize(data[i].name) +  "</a></li>");
+
+                var htmlText = "<li><a href='/recipes/" + data[i].id + 
+                    "' onclick='showRecipeInfo(event, " + data[i].id + ");>" + 
+                    capitalize(data[i].name) +  "</a></li>";
+
+                var html2 = "<li><a href='#' id='recipe-info-link' " +
+                            "onclick='showRecipeInfo(event, " + data[i].id +
+                            ");' >" + capitalize(data[i].name) + "</a></li>";
+                
+
+                $("#recipe-list").append(html2);
             }
         }
     }
 
-    function showRecipeInfo(recipeID) {
-        var recipeHref = $("")
-        var recipeInfo = $.get('/recipes/' + recipeID)
-        return ""
+    function showRecipeInfo(evt, recipeID) {
+        evt.preventDefault(); 
+        $(".show-recipe-info").show();
+        $.get('/recipe-info.json', {'recipe_id': recipeID}, function(data) {
+            console.log(data);
+            $("#recipe-name").html("Recipe Name: " + 
+                capitalize(data["recipe_name"]));
+            $("#recipe-directions").html("Recipe Directions: " + 
+                data["recipe_directions"]);
+        });
+
     }
 
     function capitalize(s) {

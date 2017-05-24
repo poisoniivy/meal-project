@@ -29,11 +29,21 @@ tr:nth-child(even) {
 {% block content %}
 
 <h1>Meal Plan</h1>
+<form action="/meal-plan-week" class="go-to-week">
+    <select name="select-week-id">
+        <option disabled selected value="None">Pick Week</option>
+        {% for w_date, w_id in week_list %}
+        <option value="{{ w_id }}">Week of {{ w_date.strftime('%-m/%d') }}
+        </option>
+        {% endfor %}
+    </select>
+    <input type="submit" id="select-week-btn" value="Select Week">
+</form>
 
 <form action="/edit-plan" class="edit" id="meal-plan-form">
 
-<div id="meal-plan-table">
-<table style="width:80%">
+<div>
+<table id="meal-plan-table" style="width:80%">
     <tr>
         <th>Meal</th>
         {% for day in all_days %}
@@ -296,9 +306,14 @@ tr:nth-child(even) {
 
   </table>
 </div>
-
     <input type="submit" name="edit" id="meal-btn" value="Edit Meal Plan">
 </form>
+
+<form action="/create-new-meal-plan" id="create-new-meal-plan">
+    <input type="submit" name="create-new" id="create-new-btn"
+        value="Create New Plan">
+</form>
+
 
 <script src="https://code.jquery.com/jquery.js"></script>
 
@@ -312,6 +327,7 @@ tr:nth-child(even) {
 
     // Event handler when you click on the meal-plan page button
     $('#meal-plan-form').on("submit", addRecipeForm);
+    // $('#shopping-list-btn').on("click", goToShoppingList);
 
     function addRecipeForm(evt) {
         evt.preventDefault();
@@ -381,6 +397,11 @@ tr:nth-child(even) {
         }
         return recipeList;
     }
+
+    // function goToShoppingList() {
+    //     var start_date = {{ all_days[0] }};
+    //     $.get('/shoppinglist');
+    // }
 
 </script>
 

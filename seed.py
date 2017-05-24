@@ -49,11 +49,6 @@ def load_meals():
 
     Meal.query.delete()
 
-    # meal1 = Meal(week_id=1, meal_type_id="din", meal_date=date(2017, 5, 7))
-    # meal2 = Meal(week_id=1, meal_type_id="din", meal_date=date(2017, 5, 8))
-    # meal3 = Meal(week_id=1, meal_type_id="din", meal_date=date(2017, 5, 9))
-    # meal4 = Meal(week_id=1, meal_type_id="br", meal_date=date(2017, 5, 7))
-
     m01 = Meal(week_id=2, meal_type_id="br", meal_date=date(2017, 5, 14))
     m02 = Meal(week_id=2, meal_type_id="lu", meal_date=date(2017, 5, 14))
     m03 = Meal(week_id=2, meal_type_id="din", meal_date=date(2017, 5, 14))

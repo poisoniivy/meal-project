@@ -42,6 +42,9 @@ class Week(db.Model):
     user = db.relationship("User",
         backref=db.backref("weeks", order_by=week_id))
 
+    # creating my unique constraint with user_id and start_date, needs to be tuple
+    __table_args__ = (db.UniqueConstraint("user_id", "start_date"),)
+
     def __repr__(self):
         """Provide helpful representation when printed."""
         return "<week_id=%s start_date=%s>" % (self.week_id,

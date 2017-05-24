@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %} Pick Week {% endblock %}
+
+{% block content %}
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/base/jquery-ui.css">
+
+<script src="static\js\week-picker.js" type="text/javascript">
+</script>
+
+
+<h1>Pick a Week</h1>
+    <form action="/create-new-meal-plan" method="post">
+        <p>Pick a Week
+            <input type="text" id="weekpicker" required="required" name="picked-week"/>
+            <input type="submit" id="week-picker-btn" 
+                name="week-picker=btn" value="Create">
+        </p>
+    </form>
+{% endblock %}

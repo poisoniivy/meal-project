@@ -104,8 +104,15 @@ def user_info(user_name):
     return render_template("user.html", user=user)
 
 
+#Python says to place function before where I call it. Need to move it out later
+def this_week_start_date():
+    """Returns the start_date for the current user's week."""
+    start_date = date.today() - datetime.timedelta(days=(date.today().weekday()+1))
+    return start_date
+
+
 @app.route('/mealplan')
-def show_meal_plan():
+def show_meal_plan(start_date=this_week_start_date()):
     """Shows user's mealplan."""
 
     # Checking if user is logged in
@@ -113,55 +120,73 @@ def show_meal_plan():
         user = User.query.filter(User.user_name==session['user_name']).one()
         all_recipes = user.recipes
 
-        # today = date.today()
-        # display_week = Meal.query.filter(Meal.meal_date==today).all()[0].week_id
-        # Currently the week starts on a Sunday
-        # start_date = date.today() - datetime.timedelta(days=(date.today().weekday()+1))
+        weeks = Week.query.filter(Week.user_id==user.user_id).all()
+        week_list = [(w.start_date, w.week_id) for w in weeks]
+        print "week_list: ", week_list
 
-        display_week = 2
-        start_date = Week.query.filter(Week.week_id==2).one().start_date
-        # Listing out days of the week to display in one week's mealplan
-        all_days = [start_date,
-                    start_date + datetime.timedelta(days=1),
-                    start_date + datetime.timedelta(days=2),
-                    start_date + datetime.timedelta(days=3),
-                    start_date + datetime.timedelta(days=4),
-                    start_date + datetime.timedelta(days=5),
-                    start_date + datetime.timedelta(days=6)]
+        if get_week_id(user.user_id, start_date) == False:
+            print "Hardcoding week ID to be 2."
+            week_id = 2
+        else:
+            week_id = get_week_id(user.user_id, start_date)
 
-        meal_plan = create_meal_plan(display_week, all_days)
+        all_days = meal_plan_days(start_date)
+
+        meal_plan = create_meal_plan(week_id, all_days)
         return render_template("mealplan.html",
                                 all_days=all_days,
                                 meal_plan=meal_plan,
-                                all_recipes=all_recipes)
+                                all_recipes=all_recipes,
+                                week_list=week_list)
+    else:
+        flash("You need to log in to access this page.")
+        return redirect("/")
+
+
+@app.route('/meal-plan-week')
+def show_meal_plan_week_id():
+    """Given a week_id, show the meal plan for that week."""
+    if 'user_name' in session:
+
+        week_id = request.args.get("select-week-id")
+        # import pdb; pdb.set_trace()
+        print "week_id", week_id
+        user = User.query.filter(User.user_name==session['user_name']).one()
+        all_recipes = user.recipes
+
+        weeks = Week.query.filter(Week.user_id==user.user_id).all()
+        week_list = [(w.start_date, w.week_id) for w in weeks]
+
+        start_date = Week.query.filter(Week.week_id==week_id).one().start_date
+
+        all_days = meal_plan_days(start_date)
+
+        meal_plan = create_meal_plan(week_id, all_days)
+
+        return render_template("mealplan.html",
+                                all_days=all_days,
+                                meal_plan=meal_plan,
+                                all_recipes=all_recipes,
+                                week_list=week_list)
     else:
         flash("You need to log in to access this page.")
         return redirect("/")
 
 
 @app.route('/edit-plan', methods=["POST"])
-def edit_meal_plan():
+def edit_meal_plan(start_date=this_week_start_date()):
     """Edits Meal plan, modifies DB with new meals, returns user to mealpage."""
     if 'user_name' in session:
 
         user = User.query.filter(User.user_name==session['user_name']).one()
 
-        # Getting info out of the json from post request
-        today = date.today()
-        week_id = Meal.query.filter(Meal.meal_date==today).all()[0].week_id
+        if get_week_id(user.user_id, start_date) == False:
+            print "Hardcoding week ID to be 2."
+            week_id = 2
+        else:
+            week_id = get_week_id(user.user_id, start_date)
 
-        # Currently the week starts on a Sunday
-        start_date = date.today() - datetime.timedelta(days=(date.today().weekday()+1))
-        # Listing out days of the week to display in one week's mealplan
-        all_days = [start_date,
-                    start_date + datetime.timedelta(days=1),
-                    start_date + datetime.timedelta(days=2),
-                    start_date + datetime.timedelta(days=3),
-                    start_date + datetime.timedelta(days=4),
-                    start_date + datetime.timedelta(days=5),
-                    start_date + datetime.timedelta(days=6)]
-
-        # import pdb; pdb.set_trace()
+        all_days = meal_plan_days(start_date)
 
         i = 1
         while i <= 7:
@@ -191,6 +216,37 @@ def edit_meal_plan():
         return redirect("/")
 
 
+@app.route('/create-new-meal-plan')
+def create_new_meal_plan_pick_week():
+    """Goes to calendar to pick a week."""
+    return render_template("/pick-calendar-week.html")
+
+
+@app.route('/create-new-meal-plan', methods=["POST"])
+def create_new_meal_plan():
+    """Checks if week already exists, if not, creates it."""
+    if 'user_name' in session:
+        user_name = session['user_name']
+        user = User.query.filter(User.user_name==user_name).one()
+
+        date_string = request.form.get("picked-week")
+        start_date_string = date_string[:10]
+        print "start_date_string: ", start_date_string
+        start_date = datetime.datetime.strptime(start_date_string, "%m/%d/%Y").date()
+        print "date object: ", start_date
+
+        # If the week already exists
+        if Week.query.filter(Week.user_id==user.user_id,
+                             Week.start_date==start_date).all() != []:
+            flash("Week already exists.")
+            show_meal_plan(start_date)
+        # Week does not exist, need to create it
+        else:
+            create_new_week(start_date)
+    else:
+        flash("You need to log in to access this page.")
+        return redirect("/")
+
 @app.route('/recipes')
 def show_recipes():
     """Shows list of all user's recipes."""
@@ -205,9 +261,23 @@ def show_recipes():
         return redirect("/")
 
 
-# @app.route('/recipes/<recipe_id>')
-# def show_recipe_info(<recipe_id>):
-#     pass
+@app.route('/recipe-info.json')
+def show_recipe_info():
+    recipe_id = request.args.get("recipe_id")
+    rec = Recipe.query.filter(Recipe.recipe_id==recipe_id).one()
+    rec_dict = {}
+    rec_dict["recipe_name"] = rec.recipe_name
+    if "directions" in rec_dict:
+        rec_dict["directions"] = rec.directions
+    if "has_dairy" in rec_dict:
+        rec_dict["has_dairy"] = rec.has_dairy
+    if "has_gluten" in rec_dict:
+        rec_dict["has_gluten"] = rec.has_gluten
+    if "vegetarian" in rec_dict:
+        rec_dict["vegetarian"] = rec.vegetarian
+
+    print rec_dict
+    return jsonify(rec_dict)
 
 
 @app.route('/show-filter-recipes.json', methods=["GET"])
@@ -235,6 +305,83 @@ def filter_recipes():
 def show_shopping_list():
     """shows users shopping list."""
     pass
+
+
+def meal_plan_days(start_date):
+    """Returns a list of 7 days for mealplan for a given datetime start_date."""
+    all_days = [start_date,
+                    start_date + datetime.timedelta(days=1),
+                    start_date + datetime.timedelta(days=2),
+                    start_date + datetime.timedelta(days=3),
+                    start_date + datetime.timedelta(days=4),
+                    start_date + datetime.timedelta(days=5),
+                    start_date + datetime.timedelta(days=6)]
+    return all_days
+
+
+def get_week_id(user_id, start_date):
+    """Returns the week_id given a user_id and a start_date."""
+    if Week.query.filter(Week.user_id==user_id,
+                            Week.start_date==start_date).all() == []:
+        return False
+    else:
+        return Week.query.filter(Week.user_id==user_id,
+                            Week.start_date==start_date).one().week_id
+
+
+def create_new_week(start_date):
+    """Creates a new week and also all the meals that are associated with week."""
+
+    # user = User.query.filter(User.user_name==session['user_name']).one()
+    user = User.query.filter(User.user_id == 1).one()
+
+    week = Week(user_id=user.user_id, start_date=start_date)
+    all_days = meal_plan_days(start_date)
+
+    db.session.add(week)
+    db.session.commit()
+    week_id = week.week_id
+
+    m01 = Meal(week_id=week_id, meal_type_id="br", meal_date=start_date)
+    m02 = Meal(week_id=week_id, meal_type_id="lu", meal_date=start_date)
+    m03 = Meal(week_id=week_id, meal_type_id="din", meal_date=start_date)
+    m04 = Meal(week_id=week_id, meal_type_id="snck", meal_date=start_date)
+
+    m05 = Meal(week_id=week_id, meal_type_id="br", meal_date=all_days[1])
+    m06 = Meal(week_id=week_id, meal_type_id="lu", meal_date=all_days[1])
+    m07 = Meal(week_id=week_id, meal_type_id="din", meal_date=all_days[1])
+    m08 = Meal(week_id=week_id, meal_type_id="snck", meal_date=all_days[1])
+
+    m09 = Meal(week_id=week_id, meal_type_id="br", meal_date=all_days[2])
+    m10 = Meal(week_id=week_id, meal_type_id="lu", meal_date=all_days[2])
+    m11 = Meal(week_id=week_id, meal_type_id="din", meal_date=all_days[2])
+    m12 = Meal(week_id=week_id, meal_type_id="snck", meal_date=all_days[2])
+
+    m13 = Meal(week_id=week_id, meal_type_id="br", meal_date=all_days[3])
+    m14 = Meal(week_id=week_id, meal_type_id="lu", meal_date=all_days[3])
+    m15 = Meal(week_id=week_id, meal_type_id="din", meal_date=all_days[3])
+    m16 = Meal(week_id=week_id, meal_type_id="snck", meal_date=all_days[3])
+
+    m17 = Meal(week_id=week_id, meal_type_id="br", meal_date=all_days[4])
+    m18 = Meal(week_id=week_id, meal_type_id="lu", meal_date=all_days[4])
+    m19 = Meal(week_id=week_id, meal_type_id="din", meal_date=all_days[4])
+    m20 = Meal(week_id=week_id, meal_type_id="snck", meal_date=all_days[4])
+
+    m21 = Meal(week_id=week_id, meal_type_id="br", meal_date=all_days[5])
+    m22 = Meal(week_id=week_id, meal_type_id="lu", meal_date=all_days[5])
+    m23 = Meal(week_id=week_id, meal_type_id="din", meal_date=all_days[5])
+    m24 = Meal(week_id=week_id, meal_type_id="snck", meal_date=all_days[5])
+
+    m25 = Meal(week_id=week_id, meal_type_id="br", meal_date=all_days[6])
+    m26 = Meal(week_id=week_id, meal_type_id="lu", meal_date=all_days[6])
+    m27 = Meal(week_id=week_id, meal_type_id="din", meal_date=all_days[6])
+    m28 = Meal(week_id=week_id, meal_type_id="snck", meal_date=all_days[6])
+
+    # db.session.add_all([meal1, meal2, meal3, meal4])
+    db.session.add_all([m01, m02, m03, m04, m05, m06, m07, m08, m09, m10, m11,
+        m12, m13, m14, m15, m16, m17, m18, m19, m20, m21, m22, m23, m24, m25,
+        m26, m27, m28])
+    db.session.commit()
 
 
 def create_meal_plan(week_id, all_days):

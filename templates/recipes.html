@@ -21,13 +21,18 @@
             </ul>
         </div>
     </div>
-    <div style="display: inline-block">
+    <div id="recipe-info" style="display: inline-block">
         <p class="show-recipe-info" id="recipe-name">Recipe Name: </p>
         <p class="show-recipe-info" id="recipe-directions">Directions: </p>
         <p class="show-recipe-info" id="recipe-has-dairy">Dairy: </p>
         <p class="show-recipe-info" id="recipe-has-gluten">Gluten: </p>
         <p class="show-recipe-info" id="recipe-vegetarian">Vegetarian: </p>
         <p class="show-recipe-info" id="recipe-ingredients">Ingredients: </p>
+        <form action="/edit-recipe" 
+            method="post" id="edit-recipe" class="show-recipe-info">
+            <input type="hidden" id="recipe-id" name="recipe-id">
+            <input type="submit" value="Edit Recipe">
+        </form>
     </div>
 </div>
 
@@ -88,7 +93,8 @@
         evt.preventDefault(); 
         $(".show-recipe-info").show();
         $.get('/recipe-info.json', {'recipe_id': recipeID}, function(data) {
-            console.log(data);
+            // console.log(data);
+            $("#recipe-id").attr("value", recipeID);
             $("#recipe-name").html("Recipe Name: " + 
                 capitalize(data["recipe_name"]));
             $("#recipe-directions").html("Recipe Directions: " + 

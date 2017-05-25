@@ -18,5 +18,10 @@ def get_ingredients_list(recipe_id):
         ing_name = ing.ingredient_name
         ing_id = ing.ingredient_id
         cat_name = ing.category.category_name
-        unit = ril.unit.unit_long 
+        unit = ril.unit.unit_long
         amount = ril.amt
+
+        ingredient_list.append(ing_id, ing_name, cat_name, unit, amount)
+
+    print ingredient_list
+    return ingredient_list

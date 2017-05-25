@@ -2,11 +2,14 @@ from jinja2 import StrictUndefined
 
 from flask import (Flask, render_template, redirect, request, flash,
                     session, jsonify)
+
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import *
 
 from mealplan import *
+
+from recipes import *
 
 from datetime import date
 
@@ -94,7 +97,7 @@ def login():
 def logout():
     """Logs out user."""
     flash("You are logged out.")
-    del session["user_id"]
+    del session["user_name"]
 
     return redirect("/")
 
@@ -144,17 +147,6 @@ def show_meal_plan(start_date=this_week_start_date()):
                                 all_recipes=all_recipes,
                                 week_list=week_list,
                                 week_id=week_id)
-    else:
-        flash("You need to log in to access this page.")
-        return redirect("/")
-
-
-@app.route('/mealplan/<week_id>')
-def show_meal_plan_week(week_id):
-    """Given a week_id, show the meal plan for that week."""
-    if 'user_name' in session:
-        week = Week.query.filter(Week.week_id==week_id).one()
-        return show_meal_plan(week.start_date)
     else:
         flash("You need to log in to access this page.")
         return redirect("/")
@@ -276,7 +268,6 @@ def show_recipe_info():
     if "vegetarian" in rec_dict:
         rec_dict["vegetarian"] = rec.vegetarian
 
-    print rec_dict
     return jsonify(rec_dict)
 
 
@@ -300,10 +291,22 @@ def filter_recipes():
     return jsonify(recipes)
 
 
+@app.route('/edit-recipe', methods=["POST"])
+def edit_recipe():
+    recipe_id = request.form.get("recipe-id")
+
+    pass
+
+
+@app.route('add-recipe')
+def add_recipe():
+    pass
+
+
 @app.route('/shoppinglist')
 def show_shopping_list():
     """shows users shopping list."""
-    pass
+    return render_template("shoppinglist.html")
 
 
 if __name__ == "__main__":

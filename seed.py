@@ -47,7 +47,7 @@ def load_meal_types():
 def load_meals():
     """Loading test meals."""
 
-    Meal.query.delete() 
+    Meal.query.delete()
 
     m01 = Meal(week_id=2, meal_type_id="br", meal_date=date(2017, 5, 14))
     m02 = Meal(week_id=2, meal_type_id="lu", meal_date=date(2017, 5, 14))

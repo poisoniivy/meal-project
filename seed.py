@@ -47,7 +47,7 @@ def load_meal_types():
 def load_meals():
     """Loading test meals."""
 
-    Meal.query.delete()
+    Meal.query.delete() 
 
     m01 = Meal(week_id=2, meal_type_id="br", meal_date=date(2017, 5, 14))
     m02 = Meal(week_id=2, meal_type_id="lu", meal_date=date(2017, 5, 14))
@@ -88,6 +88,46 @@ def load_meals():
     db.session.add_all([m01, m02, m03, m04, m05, m06, m07, m08, m09, m10, m11,
         m12, m13, m14, m15, m16, m17, m18, m19, m20, m21, m22, m23, m24, m25,
         m26, m27, m28])
+    db.session.commit()
+
+    m29 = Meal(week_id=1, meal_type_id="br", meal_date=date(2017, 5, 7))
+    m30 = Meal(week_id=1, meal_type_id="lu", meal_date=date(2017, 5, 7))
+    m31 = Meal(week_id=1, meal_type_id="din", meal_date=date(2017, 5, 7))
+    m32 = Meal(week_id=1, meal_type_id="snck", meal_date=date(2017, 5, 7))
+
+    m33 = Meal(week_id=1, meal_type_id="br", meal_date=date(2017, 5, 8))
+    m34 = Meal(week_id=1, meal_type_id="lu", meal_date=date(2017, 5, 8))
+    m35 = Meal(week_id=1, meal_type_id="din", meal_date=date(2017, 5, 8))
+    m36 = Meal(week_id=1, meal_type_id="snck", meal_date=date(2017, 5, 8))
+
+    m37 = Meal(week_id=1, meal_type_id="br", meal_date=date(2017, 5, 9))
+    m38 = Meal(week_id=1, meal_type_id="lu", meal_date=date(2017, 5, 9))
+    m39 = Meal(week_id=1, meal_type_id="din", meal_date=date(2017, 5, 9))
+    m40 = Meal(week_id=1, meal_type_id="snck", meal_date=date(2017, 5, 9))
+
+    m41 = Meal(week_id=1, meal_type_id="br", meal_date=date(2017, 5, 10))
+    m42 = Meal(week_id=1, meal_type_id="lu", meal_date=date(2017, 5, 10))
+    m43 = Meal(week_id=1, meal_type_id="din", meal_date=date(2017, 5, 10))
+    m44 = Meal(week_id=1, meal_type_id="snck", meal_date=date(2017, 5, 10))
+
+    m45 = Meal(week_id=1, meal_type_id="br", meal_date=date(2017, 5, 11))
+    m46 = Meal(week_id=1, meal_type_id="lu", meal_date=date(2017, 5, 11))
+    m47 = Meal(week_id=1, meal_type_id="din", meal_date=date(2017, 5, 11))
+    m48 = Meal(week_id=1, meal_type_id="snck", meal_date=date(2017, 5, 11))
+
+    m49 = Meal(week_id=1, meal_type_id="br", meal_date=date(2017, 5, 12))
+    m50 = Meal(week_id=1, meal_type_id="lu", meal_date=date(2017, 5, 12))
+    m51 = Meal(week_id=1, meal_type_id="din", meal_date=date(2017, 5, 12))
+    m52 = Meal(week_id=1, meal_type_id="snck", meal_date=date(2017, 5, 12))
+
+    m53 = Meal(week_id=1, meal_type_id="br", meal_date=date(2017, 5, 13))
+    m54 = Meal(week_id=1, meal_type_id="lu", meal_date=date(2017, 5, 13))
+    m55 = Meal(week_id=1, meal_type_id="din", meal_date=date(2017, 5, 13))
+    m56 = Meal(week_id=1, meal_type_id="snck", meal_date=date(2017, 5, 13))
+
+    db.session.add_all([m29, m30, m31, m32, m33, m34, m35, m36, m37, m38, m39,
+        m40, m41, m42, m43, m44, m45, m46, m47, m48, m49, m50, m51, m52, m53,
+        m54, m55, m56])
     db.session.commit()
 
 

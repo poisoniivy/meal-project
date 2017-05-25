@@ -1,6 +1,8 @@
 """Models and database functions for my Meal Planner Project."""
 
 from flask_sqlalchemy import SQLAlchemy
+import datetime
+from datetime import date
 
 db = SQLAlchemy()
 
@@ -49,6 +51,19 @@ class Week(db.Model):
         """Provide helpful representation when printed."""
         return "<week_id=%s start_date=%s>" % (self.week_id,
                                                  self.start_date)
+
+    # Static methods in Week class
+    def plan_days(self):
+        """Returns a list of datetime dates for that specific week."""
+        first_day = self.start_date.date()
+        _all_days = [first_day,
+                    first_day + datetime.timedelta(days=1),
+                    first_day + datetime.timedelta(days=2),
+                    first_day + datetime.timedelta(days=3),
+                    first_day + datetime.timedelta(days=4),
+                    first_day + datetime.timedelta(days=5),
+                    first_day + datetime.timedelta(days=6)]
+        return _all_days
 
 
 class MealType(db.Model):

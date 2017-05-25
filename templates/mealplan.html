@@ -28,7 +28,7 @@ tr:nth-child(even) {
 
 {% block content %}
 
-<h1>Meal Plan</h1>
+<h1 id="{{ week_id }}">Meal Plan</h1>
 <form action="/meal-plan-week" class="go-to-week">
     <select name="select-week-id">
         <option disabled selected value="None">Pick Week</option>
@@ -346,7 +346,7 @@ tr:nth-child(even) {
             $('#meal-btn').val("Edit Meal Plan");
 
             formData = getFormInfo();
-            console.log("JSONstringify: " + JSON.stringify(formData));
+            // console.log("JSONstringify: " + JSON.stringify(formData));
             // $.post("/edit-plan", JSON.stringify(formData), showMealPlan, "json");
             $.ajax({
                 url:"/edit-plan",
@@ -354,7 +354,10 @@ tr:nth-child(even) {
                 data:JSON.stringify(formData),
                 contentType:"application/json; charset=utf-8",
                 dataType:"json",
-                showMealPlan
+                success: function(data) {
+                    console.log(data);
+                    window.location.reload();
+                }
             });
 
         }
@@ -376,7 +379,8 @@ tr:nth-child(even) {
             var breakfastOptions = $('select.day'+i+'-breakfast');
             var lunchOptions = $('select.day'+i+'-lunch');
             var dinnerOptions = $('select.day'+i+'-dinner');
-            var snackOptions = $('select.day'+i+'-snacks');
+            var snackOptions = $('select.day'+i+'-snack');
+            var weekID = $("h1").attr("id"); 
 
             mealObject["breakfast"] = createMealList(breakfastOptions);
             mealObject["lunch"] = createMealList(lunchOptions);
@@ -384,7 +388,9 @@ tr:nth-child(even) {
             mealObject["snacks"] = createMealList(snackOptions);
 
             formInfo["day"+i] = mealObject;
-        }   
+        }  
+        formInfo["week_id"] = weekID;
+
         return formInfo;
     }
 

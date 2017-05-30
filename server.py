@@ -38,7 +38,7 @@ def index():
 def register_user():
     """Handles registering user route."""
 
-    return render_template("register_form.html")
+    return render_template("register-form.html")
 
 
 @app.route('/register', methods=["POST"])
@@ -129,15 +129,14 @@ def show_meal_plan(start_date=this_week_start_date()):
         if get_week_id(user.user_id, start_date) == False:
             flash("You do not have a meal plan for this week.")
             # sets week ID to the most recent week that was created
-            week_id = Week.query.filter(Week.user_id==1).order_by(
+            week_id = Week.query.filter(Week.user_id==user.user_id).order_by(
                 Week.start_date.desc()).all()[0].week_id
-            # start_date = Week.query.filter(Week.week_id).one().start_date
         else:
             # week-id is the current week's start_date
             week_id = get_week_id(user.user_id, start_date)
 
         # Grabbing the list of all the days that belong to the week_id
-        w = Week.query.filter(Week.week_id==week_id).one()
+        w = Week.query.get(week_id)
         all_days = w.plan_days()
 
         meal_plan = create_meal_plan(week_id, all_days)
@@ -158,7 +157,7 @@ def show_meal_plan_week_id():
     if 'user_name' in session:
 
         week_id = request.args.get("select-week-id")
-        week = Week.query.filter(Week.week_id==week_id).one()
+        week = Week.query.get(week_id)
 
         return show_meal_plan(week.start_date)
     else:
@@ -174,7 +173,7 @@ def edit_meal_plan():
         user = User.query.filter(User.user_name==session['user_name']).one()
         week_id = request.json["week_id"]
 
-        week = Week.query.filter(Week.week_id==week_id).one()
+        week = Week.query.get(week_id)
         start_date = week.start_date
         all_days = week.plan_days()
 
@@ -220,9 +219,9 @@ def create_new_meal_plan():
 
         date_string = request.form.get("picked-week")
         start_date_string = date_string[:10]
-        print "start_date_string: ", start_date_string
+        # print "start_date_string: ", start_date_string
         start_date = datetime.datetime.strptime(start_date_string, "%m/%d/%Y").date()
-        print "date object: ", start_date
+        # print "date object: ", start_date
 
         # If the week already exists
         if Week.query.filter(Week.user_id==user.user_id,
@@ -256,7 +255,7 @@ def show_recipes():
 @app.route('/recipe-info.json')
 def show_recipe_info():
     recipe_id = request.args.get("recipe_id")
-    rec = Recipe.query.filter(Recipe.recipe_id==recipe_id).one()
+    rec = Recipe.query.get(recipe_id)
     rec_dict = {}
     rec_dict["recipe_name"] = rec.recipe_name
     if "directions" in rec_dict:
@@ -291,22 +290,90 @@ def filter_recipes():
     return jsonify(recipes)
 
 
+@app.route('/edit-recipe', methods=["GET"])
+def show_edit_recipe_page():
+    """Directs user to edit recipe page with pre-filled info to edit."""
+    recipe_id = request.args.get("recipe-id")
+    r = Recipe.query.get(recipe_id)
+
+    return render_template("edit-recipe.html", recipe=r)
+
+
 @app.route('/edit-recipe', methods=["POST"])
 def edit_recipe():
-    recipe_id = request.form.get("recipe-id")
+    """Takes changes from user and edits recipe info."""
+    return redirect("/recipes")
 
-    pass
+
+@app.route('/add-recipe')
+def show_add_recipe_page():
+    units = Unit.query.all()
+    ingredients = Ingredient.query.all()
+    return render_template("add-recipe.html",
+                            units=units,
+                            ingredients=ingredients)
 
 
-@app.route('add-recipe')
+@app.route('/add-recipe', methods=["POST"])
 def add_recipe():
-    pass
+
+    if 'user_name' in session:
+        user_name = session['user_name']
+        user = User.query.filter(User.user_name==user_name).one()
+
+        # import pdb; pdb.set_trace()
+
+        recipe_name = request.json["name"]
+        directions = request.json["directions"]
+        ingredient_dict = request.json["ingredients"]
+
+        # import pdb; pdb.set_trace()
+        print recipe_name, directions, ingredient_dict
+
+        # Adding recipe to database
+        # Future: add in booleans
+        recipe_id = add_new_recipe(recipe_name=recipe_name,
+                                directions=directions)
+
+        # connect the user to recipe
+        add_recipe_to_user(recipe_id, user.user_id)
+
+        # Adding the ingredients to the database
+        for item in ingredient_dict.keys():
+            ing_name, amount, unit = ingredient_dict[item]
+
+            ing_query = Ingredient.query.filter(
+                Ingredient.ingredient_name==str(ing_name))
+            # if ingredient already exists in db:
+            if ing_query.all():
+                ing = ing_query.one()
+                add_ingredient_to_recipe(ing.ingredient_id, recipe_id,
+                    str(unit), float(amount))
+            # ingredient does not exist in db
+            else:
+                ing_id = add_ingredient(str(ing_name))
+                add_ingredient_to_recipe(ing_id, recipe_id,
+                    str(unit), float(amount))
+        print "finished adding ingredients"
+        return jsonify("/recipes")
+
+    else:
+        flash("You need to log in to access this page.")
+        return redirect("/")
 
 
 @app.route('/shoppinglist')
 def show_shopping_list():
     """shows users shopping list."""
-    return render_template("shoppinglist.html")
+    week_id = request.args.get("week_id")
+
+    week = Week.query.get(week_id)
+    recipe_list = get_all_recipes_from_week(week_id)
+
+    shopping_list = get_shopping_list(recipe_list)
+
+    return render_template("shoppinglist.html", shopping_list=shopping_list,
+                                                week_start_date=week.start_date)
 
 
 if __name__ == "__main__":

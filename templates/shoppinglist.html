@@ -5,7 +5,17 @@
 
 {% block content %}
 
-<h1>Shopping List for Week: </h1>
+<h1>Shopping List for Week: {{ week_start_date.strftime('%-m/%d') }}</h1>
 
+{% for category in shopping_list.keys() %}
+{{ category }}
+<br>
+
+{% for ingredient in shopping_list[category].values() %}
+<li>{{ ingredient["amount"] }} {{ ingredient["unit"] }} {{ ingredient["name"] }}
+</li>
+{% endfor %}
+
+{% endfor %}
 
 {% endblock %}

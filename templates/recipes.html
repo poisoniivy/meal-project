@@ -20,6 +20,10 @@
             <ul id="recipe-list">
             </ul>
         </div>
+        <br>
+        <form action="/add-recipe" id="add-recipe-form">
+            <input type="submit" value="Add Recipe">
+        </form>
     </div>
     <div id="recipe-info" style="display: inline-block">
         <p class="show-recipe-info" id="recipe-name">Recipe Name: </p>
@@ -28,8 +32,8 @@
         <p class="show-recipe-info" id="recipe-has-gluten">Gluten: </p>
         <p class="show-recipe-info" id="recipe-vegetarian">Vegetarian: </p>
         <p class="show-recipe-info" id="recipe-ingredients">Ingredients: </p>
-        <form action="/edit-recipe" 
-            method="post" id="edit-recipe" class="show-recipe-info">
+        <form action="/edit-recipe"
+            method="get" id="edit-recipe-form" class="show-recipe-info">
             <input type="hidden" id="recipe-id" name="recipe-id">
             <input type="submit" value="Edit Recipe">
         </form>

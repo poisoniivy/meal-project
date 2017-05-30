@@ -5,8 +5,55 @@
 
 {% block content %}
 
-<h1>Recipe </h1>
+<h1>Edit Recipe: {{ recipe.recipe_name|capitalize() }}</h1>
+
+<form action="/edit-recipe" method="post" id="edit-recipe-form">
+    <input type="hidden" id="recipe-id" name="recipe-id" 
+        value="{{ recipe.recipe_id }}">
+    Recipe Name<input type="text" id="edit-name" name="edit-name"
+        value="{{ recipe.recipe_name }}">
+    <br>
+
+    Ingredients:
+    <br>
+    <table class="table">
+        <thead>
+            <th>Amount</th>
+            <th>Unit</th>
+            <th>Ingredient</th>
+        </thead>
+        <tbody class="ingredient-additions">
+            {% for rec_ing in recipe.recipe_ingredients %}
+                <input type="number" name="quantity" min="0" value="{{ rec_ing.amt }}">
+                <input type="text" name="unit" min="0" 
+                    value="{{ rec_ing.unit.unit_short }}">
+                <input type="text" name="name" 
+                    value="{{ rec_ing.ingredient.ingredient_name }}">
+                <br>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <input type="button" name="add-ingredient" class="add-ingredient-line-btn"
+        value="Add Ingredient">
+    <br>
+    Directions<br>
+    <textarea rows="4" cols="50" name="directions" id="edit-directions">
+        {% if recipe.directions is none %}
+        Enter directions here...
+        {% else %} {{ recipe.directions }}
+        {% endif %}
+    </textarea>
+    <br>
+    <input type="submit" id="edit-recipe-btn" value="Save">
+    <input type="button" id="remove-recipe-btn" value="Delete">
+</form>
 
 
+<script>
+    $("#add-ingredient-line-btn").on("click", function() {
+
+    });
+</script>
 
 {% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Add Recipe {% endblock %}
+
+{% block content %}
+
+<h1>Add Recipe </h1>
+
+
+
+<form action="/add-recipe" method="post" id="add-recipe-form">
+
+    Recipe Name<input type="text" id="edit-name" name="edit-name"
+        default="Enter name">
+    <br>
+
+    Ingredients:
+    <table class="table">
+        <thead>
+            <th>Amount</th>
+            <th>Unit</th>
+            <th>Ingredient</th>
+        </thead>
+        <tbody class="ingredient-additions">
+        </tbody>
+    </table>
+
+    <br>
+    <input type="button" name="add-ingredient" class="add-ingredient-line-btn"
+        value="Add Ingredient">
+    <br>
+    Directions<br>
+    <textarea rows="4" cols="50" name="directions" id="edit-directions">
+        Enter directions here...
+    </textarea>
+    <br>
+    <input type="submit" id="edit-recipe-btn" value="Save">
+</form>
+
+<script>
+    
+    var wrapper = $(".ingredient-additions");
+    $(".add-ingredient-line-btn").click(addIngredientField);
+
+    function addIngredientField(evt) {
+        evt.preventDefault();
+
+        var max_fields = 20; //maximum ingredients allowed
+        var wrapper = $(".ingredient-additions"); //Fields wrapper
+        var x = $("select.ingredient").length;
+
+        if(x < max_fields) { //max input box allowed
+            x++; //text box increment
+
+            // adding one row of ingredient input fields
+            $(wrapper).append('<tr><td><input type="number" name="amount"' +
+                'id="amount-' + x + '" min="0"></td>' +
+                ' <td><select name="ingredient" class="ingredient"' +
+                'id="unit-' + x + '">' +
+                '{% for unit in units %}' +
+                '<option name="unit" min="0" value="{{ unit.unit_id }}">' +
+                    '{{ unit.unit_short }} </option>' +
+                '{% endfor %} </select></td>' + 
+                '<td><input type="text" name="ingredient-name"' + 
+                'id="ingredient-name-' + x + '"></td>' +
+                '<a href="#" class="remove_field">Remove</a></tr>'); 
+        }
+    }
+    
+    $(wrapper).on("click",".remove_field", function(evt ) { //user click on remove text
+        evt.preventDefault(); $(this).parent('div').remove(); x--;
+    })
+
+
+    $("#add-recipe-form").on("submit", addRecipe);
+
+    function addRecipe(evt) {
+        evt.preventDefault();
+
+        // console.log("Got into addRecipe");
+        var recipeObject = new Object();
+        var recipeName = $("#edit-name").val();
+        var directions = $("#edit-directions").val();
+
+        // console.log(recipeName);
+        // console.log(directions);
+
+        var num_ing = $("select.ingredient").length;
+        // var ingredient_list = [];
+        var ingredientObject = new Object();
+
+        for (var i = 1; i <= num_ing; i++) {
+            var ingredientName = $("#ingredient-name-"+i).val();
+            var ingredientUnit = $("#unit-"+i).val();
+            var ingredientAmount = $("#amount-"+i).val();
+
+            ingredient = [ingredientName, ingredientAmount, ingredientUnit];
+
+            // ingredient_list.push(ingredient);
+            ingredientObject[i] = ingredient;
+        }
+
+        recipeObject["ingredients"] = ingredientObject;
+        recipeObject["name" ] = recipeName;
+        recipeObject["directions"] = directions;
+
+        // console.log(recipeObject);
+
+        // $.post("/add-recipe", recipeObject, function (data) {
+        //     window.location.replace("/recipes");
+        // });
+
+        $.ajax({
+            url:"/add-recipe",
+            type:"POST",
+            data:JSON.stringify(recipeObject),
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+            success: function(data) {
+                // console.log(data);
+                console.log("success?");
+                window.location.replace("/recipes");
+            }
+        });
+
+    }
+
+</script>
+
+{% endblock %}

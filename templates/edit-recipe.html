@@ -7,15 +7,14 @@
 
 <h1>Edit Recipe: {{ recipe.recipe_name|capitalize() }}</h1>
 
-<form action="/edit-recipe" method="post" id="edit-recipe-form">
+<form id="edit-recipe-form">
+
     <input type="hidden" id="recipe-id" name="recipe-id" 
         value="{{ recipe.recipe_id }}">
     Recipe Name<input type="text" id="edit-name" name="edit-name"
         value="{{ recipe.recipe_name }}">
     <br>
-
     Ingredients:
-    <br>
     <table class="table">
         <thead>
             <th>Amount</th>
@@ -24,12 +23,33 @@
         </thead>
         <tbody class="ingredient-additions">
             {% for rec_ing in recipe.recipe_ingredients %}
-                <input type="number" name="quantity" min="0" value="{{ rec_ing.amt }}">
-                <input type="text" name="unit" min="0" 
-                    value="{{ rec_ing.unit.unit_short }}">
-                <input type="text" name="name" 
+            {% set outer_loop = loop %}
+            <tr>
+                <input type="hidden" name="ingredient-id" 
+                    id="ing-id-{{ loop.index }}" 
+                    value="{{ rec_ing.ingredient_id}}">
+                <td><input type="number" name="amount" min="0.0" 
+                    id="amount-{{ loop.index }}"
+                    value="{{ rec_ing.amt }}"></td>
+                <td><select name="unit-select" id="unit-{{ outer_loop.index }}">
+                        {% for unit in units %}
+                        {% if rec_ing.unit.unit_id == unit.unit_id %}
+                        <option name="unit" value="{{ rec_ing.unit.unit_id }}"
+                            selected> {{ rec_ing.unit.unit_short }} </option>
+                        {% else %}
+                        <option name="unit" value="{{ unit.unit_id }}">
+                            {{ unit.unit_short }}
+                        </option>
+                        {% endif %}
+                        {% endfor %}
+                    </select></td>
+                <td><input type="text" name="ingredient-name"
+                    class="ingredient" 
+                    id="ingredient-name-{{ outer_loop.index }}"
                     value="{{ rec_ing.ingredient.ingredient_name }}">
+                </td>
                 <br>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
@@ -46,14 +66,126 @@
     </textarea>
     <br>
     <input type="submit" id="edit-recipe-btn" value="Save">
-    <input type="button" id="remove-recipe-btn" value="Delete">
+</form>
+
+<form action="/delete-recipe" method="post" id="delete-recipe-form">
+    <input type="hidden" id="recipe-id" name="recipe-id" 
+        value="{{ recipe.recipe_id }}">
+    <input type="submit" id="remove-recipe-btn" value="Delete">
 </form>
 
 
 <script>
-    $("#add-ingredient-line-btn").on("click", function() {
+    var recipeID = $("#recipe-id").val();
+    
+    var wrapper = $(".ingredient-additions");
+    $(".add-ingredient-line-btn").click(addIngredientField);
 
-    });
+    function addIngredientField(evt) {
+        evt.preventDefault();
+
+        var max_fields = 20; //maximum ingredients allowed
+        var wrapper = $(".ingredient-additions"); //Fields wrapper
+        var x = $(".ingredient").length + $(".new-ingredient").length;
+
+        if(x < max_fields) { //max input box allowed
+            x++; //text box increment
+
+            // adding one row of ingredient input fields
+            $(wrapper).append('<tr><td><input type="number" name="amount"' +
+                'id="amount-' + x + '" min="0.0"></td>' +
+                ' <td><select name="ingredient" id="unit-' + x + '">' +
+                '{% for unit in units %}' +
+                '<option name="unit" min="0" value="{{ unit.unit_id }}">' +
+                    '{{ unit.unit_short }} </option>' +
+                '{% endfor %} </select></td>' + 
+                '<td><input type="text" name="ingredient-name"' + 
+                'class="new-ingredient" id="ingredient-name-' + x + '"></td>' +
+                '<a href="#" class="remove_field">Remove</a></tr>'); 
+        }
+    }
+    
+    $(wrapper).on("click",".remove_field", function(evt ) { //user click on remove text
+        evt.preventDefault(); $(this).parent('tr').remove(); x--;
+    })
+
+
+    $("#delete-recipe-form").on("submit", deleteRecipe);
+
+    function deleteRecipe(evt) {
+        evt.preventDefault();
+        console.log("got into deleteRecipe function");
+        confirmDelete = confirm("Are you sure you want to delete this recipe?");
+        if (confirmDelete) {
+            $.post("/delete-recipe", {"recipe-id": recipeID}, 
+                function (data) {
+                    window.location.replace("/recipes");
+            });
+        }
+    }
+
+    $("#edit-recipe-form").on("submit", editRecipe);
+
+    function editRecipe(evt) {
+        evt.preventDefault();
+
+        // console.log("Got into addRecipe");
+        var recipeObject = new Object();
+        var recipeName = $("#edit-name").val();
+        var directions = $("#edit-directions").val();
+
+        // Number of current ingredients to edit/change
+        var num_ing = $(".ingredient").length;
+
+        // Number of new ingredients to add
+        var num_new_ing = $(".new-ingredient").length;
+        
+        // var ingredient_list = [];
+        var ingredientObject = new Object();
+        var newIngredients = new Object();
+
+        for (var i = 1; i <= num_ing; i++) {
+            var ingredientName = $("#ingredient-name-"+i).val();
+            var ingredientUnit = $("#unit-"+i).val();
+            var ingredientAmount = $("#amount-"+i).val();
+            var ingredientID = $("#ing-id-"+i).val();
+
+            ingredient = [ingredientID, ingredientName, 
+                ingredientAmount, ingredientUnit];
+
+            // ingredient_list.push(ingredient);
+            ingredientObject[i] = ingredient;
+        }
+
+        // Adding in all the new ingredients into object
+        for (var j = num_ing + 1; j <= num_new_ing + num_ing; j++) {
+            var ingredientName = $("#ingredient-name-"+i).val();
+            var ingredientUnit = $("#unit-"+i).val();
+            var ingredientAmount = $("#amount-"+i).val();
+
+            ingredient = [ingredientName, ingredientAmount, ingredientUnit];
+            newIngredients[i] = ingredient;
+        }
+
+        recipeObject["ingredients"] = ingredientObject;
+        recipeObject["new_ingredients"] = newIngredients;
+        recipeObject["name" ] = recipeName;
+        recipeObject["directions"] = directions;
+        recipeObject["recipe_id"] = recipeID;
+
+        $.ajax({
+            url:"/edit-recipe",
+            type:"POST",
+            data:JSON.stringify(recipeObject),
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+            success: function(data) {
+                window.location.replace("/recipes");
+            }
+        });
+    }
+
+
 </script>
 
 {% endblock %}

@@ -7,6 +7,7 @@ import datetime
 def get_ingredients_list(recipe_id):
     """Returns list of tuples of ingredient information given a recipe_id."""
 
+    # Perhaps refactor later and create an extensive SQLAlchemy query
     recipe = Recipe.query.get(recipe_id)
 
     recipe_ingredients_list = recipe.recipe_ingredients
@@ -120,6 +121,72 @@ def add_recipe_to_user(recipe_id, user_id):
     db.session.add(user_rec)
     db.session.commit()
 
+
+def remove_recipe_from_user(recipe_id, user_id):
+    """Removes the connection between a recipe and a user."""
+    ur = UserRecipe.query.filter(UserRecipe.recipe_id==recipe_id,
+                                UserRecipe.user_id==user_id).one()
+    db.session.delete(ur)
+    db.session.commit()
+
+def remove_recipe_from_meal(recipe_id):
+    """Removies all the meals that a recipe is connected to."""
+    mr_list = MealRecipe.query.filter(MealRecipe.recipe_id==recipe_id).all()
+
+    for mr in mr_list:
+        db.session.delete_all(mr)
+
+    db.session.commit
+
+
+def remove_ingredients_from_recipe(recipe_id):
+    """Removes the connection of a recipe to all its ingredients."""
+    rec_ing_list = RecipeIngredient.query.filter(
+                    RecipeIngredient.recipe_id==recipe_id).all()
+
+    for rec_ing in rec_ing_list:
+        db.session.delete(rec_ing)
+
+    db.session.commit()
+
+
+def remove_recipe(recipe_id):
+    """Deletes recipe from DB."""
+
+    recipe = Recipe.query.get(recipe_id)
+    db.session.delete(recipe)
+    db.session.commit()
+
+
+def ingredient_in_recipe(ingredient_id, recipe_id):
+    """Checks to see if ingredient already in the recipe. Returns boolean."""
+
+    check = RecipeIngredient.query.filter(RecipeIngredient.recipe_id==recipe_id,
+                        RecipeIngredient.ingredient_id==ingredient_id).first()
+    return check
+
+
+def edit_recipe_ingredient(recipe_id, ingredient_id, unit, amount):
+    """Edits ingredient info for a specfic recipe."""
+    data = {    "unit_id": unit,
+                "amt": amount
+            }
+    db.session.query(RecipeIngredient).filter(RecipeIngredient.recipe_id==recipe_id,
+        RecipeIngredient.ingredient_id==ingredient_id).update(data)
+    db.session.commit()
+
+
+def edit_recipe_information(recipe_id, recipe_name, directions=None,
+        recipe_url=None, has_dairy=None, has_gluten=None, vegetarian=None):
+    data = {    "recipe_name": recipe_name,
+                "recipe_url": recipe_url,
+                "directions": directions,
+                "has_dairy": has_dairy,
+                "has_gluten": has_gluten,
+                "vegetarian": vegetarian
+            }
+    db.session.query(Recipe).filter(Recipe.recipe_id==recipe_id).update(data)
+    db.session.commit()
 
 ##############################################################################
 # Helper functions

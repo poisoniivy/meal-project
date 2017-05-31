@@ -284,7 +284,7 @@ def filter_recipes():
             recipe_list = recipe_list + m.recipes
 
     recipe_list = list(set(recipe_list))
-    recipes = [{'id':rec.recipe_id, 'name':rec.recipe_name} for rec in recipe_list]
+    recipes = [{'id':rec.recipe_id, 'name':rec.recipe_name,'directions':rec.directions} for rec in recipe_list]
 
     print recipes
     return jsonify(recipes)
@@ -295,14 +295,76 @@ def show_edit_recipe_page():
     """Directs user to edit recipe page with pre-filled info to edit."""
     recipe_id = request.args.get("recipe-id")
     r = Recipe.query.get(recipe_id)
-
-    return render_template("edit-recipe.html", recipe=r)
+    units = Unit.query.all()
+    return render_template("edit-recipe.html", recipe=r, units=units)
 
 
 @app.route('/edit-recipe', methods=["POST"])
 def edit_recipe():
     """Takes changes from user and edits recipe info."""
-    return redirect("/recipes")
+
+    if 'user_name' in session:
+        user_name = session['user_name']
+        user = User.query.filter(User.user_name==user_name).one()
+
+        # import pdb; pdb.set_trace()
+        recipe_id = request.json["recipe_id"]
+        recipe_name = request.json["name"]
+        directions = request.json["directions"]
+        ing_dict = request.json["ingredients"]
+        new_ing = request.json["new_ingredients"]
+
+        # import pdb; pdb.set_trace()
+
+        # Adding new ingredients to the database
+        for item in new_ing.keys():
+            ing_name, amount, unit = new_ing[item]
+
+            ing_query = Ingredient.query.filter(
+                Ingredient.ingredient_name==str(ing_name))
+            # if ingredient already exists in db:
+            if ing_query.all():
+                ing = ing_query.one()
+                add_ingredient_to_recipe(ing.ingredient_id, recipe_id,
+                    str(unit), float(amount))
+            # ingredient does not exist in db
+            else:
+                ing_id = add_ingredient(str(ing_name))
+                add_ingredient_to_recipe(ing_id, recipe_id,
+                    str(unit), float(amount))
+
+        # Editing existing ingredients to database
+        for item in ing_dict:
+            ing_id, ing_name, amount, unit = ing_dict[item]
+            edit_recipe_ingredient(recipe_id, ing_id, unit, amount)
+
+        flash("Your recipe has been updated.")
+        return jsonify("/recipes")
+
+    else:
+        flash("You need to log in to access this page.")
+        return redirect("/recipes")
+
+
+@app.route('/delete-recipe', methods=["POST"])
+def delete_recipe():
+    """Removes recipe from user."""
+    if 'user_name' in session:
+        user_name = session['user_name']
+        user = User.query.filter(User.user_name == user_name).one()
+
+        recipe_id = request.form.get("recipe-id")
+        remove_recipe_from_user(recipe_id, user.user_id)
+        remove_recipe_from_meal(recipe_id)
+        remove_ingredients_from_recipe(recipe_id)
+        remove_recipe(recipe_id)
+
+        flash("Your recipe has been deleted.")
+
+        return redirect("/recipes")
+    else:
+        flash("You need to log in to access this page.")
+        return redirect("/")
 
 
 @app.route('/add-recipe')

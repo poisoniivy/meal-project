@@ -31,7 +31,7 @@ tr:nth-child(even) {
 <h1 id="{{ week_id }}">Meal Plan</h1>
 <form action="/meal-plan-week" class="go-to-week">
     <select name="select-week-id">
-        <option disabled selected value="None">Pick Week</option>
+        <option disabled selected>Pick Week</option>
         {% for w_date, w_id in week_list %}
         <option value="{{ w_id }}">Week of {{ w_date.strftime('%-m/%d') }}
         </option>

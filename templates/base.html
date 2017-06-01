@@ -1,28 +1,49 @@
 <!doctype html>
 <html>
 <head>
-    <title>{% block title %}TITLE HERE{% endblock %}</title>
-    <style>{% block style %}STYLE HERE{% endblock %}</style>
-    <script src="https://code.jquery.com/jquery.js"></script>
+
+<title>{% block title %}TITLE HERE{% endblock %}</title>
+<style>{% block style %}STYLE HERE{% endblock %}</style>
+<script src="https://code.jquery.com/jquery.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+{% block js %}{% endblock %}
+
 </head>
 
 <body>
 
-    {% if 'user_name' in session %}
-        <div class="topnav" id="logged-in-topnav">
-            <a href="/user/{{ session['user_name'] }}">Home</a>
-            <a href="/mealplan">Meal Plan</a>
-            <a href="/recipes">Recipe Box</a>
-            <a href="#about">About</a>
-            <a href="/logout">Log Out</a>
+{% if 'user_name' in session %}
+<nav class="navbar navbar-default">
+    <div class="container-fluid" id="logged-in-topnav">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Eat.Plan.Love.</a>
         </div>
-    {% endif %}
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="/user/{{ session['user_name'] }}">Home</a>
+            <li><a href="/mealplan">Meal Plan</a></li>
+            <li><a href="/recipes">Recipe Box</a></li>
+            <li><a href="/analysis">Analytics</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="/logout">Log Out</a></li>
+        </ul>
+    </div>
+</nav>
+{% endif %}
 
 
 <!-- Show flashed messages -->
 {% with messages = get_flashed_messages() %}
 {% for message in messages %}
-<div class="alert alert-warning">{{ message }}</div>
+<div class="alert alert-success alert-dismissable">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>{{ message }}</strong>
+</div>
+
 {% endfor %}
 {% endwith %}
 

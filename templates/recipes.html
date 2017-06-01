@@ -98,17 +98,26 @@
                 capitalize(data["recipe_name"]));
 
             var ingredients = data["ingredients"];
+            console.log(data);
+            console.log(ingredients);
 
             var ingredientsRows = "";
 
-            for (i = 0; i < data["num_ingredients"]; i++) {
-                ing = ingredients[i];
-                ingredientsRows += "<tr><td>" + ing.amount + "</td>" +
-                    "<td>" + ing.unit + "</td>" +
-                    "<td>" + ing["name"] + "</td></tr>";
+            for (var i = 0; i < data["num_ingredients"]; i++) {
+                var ing = ingredients["ing-"+i];
+                console.log(ing);
+                // console.log(data["ingredients"]["ing-"+i]["info"]);
+
+                var ingName = ing[0];
+                var ingAmount = ing[1];
+                var ingUnit = ing[2];
+
+                ingredientsRows = ingredientsRows + "<tr><td>" + ingAmount + "</td>" +
+                    "<td>" + ingUnit + "</td>" +
+                    "<td>" + ingName + "</td></tr>";
             }
 
-            var ingredientsTableInfo = "Ingredients:<br><table><thead>" +
+            var ingredientsTableInfo = "Ingredients:<br><table class='table'><thead>" +
             "<th>Amount</th><th>Unit</th><th>Ingredient</th></thead>" +
             "<tbody>" + ingredientsRows + "</tbody></table>";
 

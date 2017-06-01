@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Meal Analytics {% endblock %}
+{% block js %} 
+<script src=
+  "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.js">
+</script>
+{% endblock %}
+
+{% block content %}
+
+<h1>Analysis of your Meal Plan</h1>
+
+<input type="button" id="show-week-info" value="Last 7 Days">
+<input type="button" id="show-month-info" value="Last 30 Days">
+<br>
+<div class="mealplan-chart">
+    <p class="week-info">Last 7 Days</p>
+    <canvas id="donutChart"></canvas>
+    <div id="donutLegend" class="chart-legend"></div>
+<div>
+
+<script>
+
+    var options = { responsive: true };
+
+    var ctx_donut = $("#donutChart").get(0).getContext("2d");
+
+    $.get("/meal-data.json", function (data) {
+        var myDonutChart = new Chart(ctx_donut, {
+                                                type: 'doughnut',
+                                                data: data,
+                                                options: options
+                                              });
+        $('#donutLegend').html(myDonutChart.generateLegend());
+    });
+
+    $("#show-week-info").on("click", showWeekInfo);
+    $("#show-month-info").on("click", showMonthInfo);
+
+    function showWeekInfo(evt) {
+        evt.preventDefault();
+
+        $.get("/meal-data.json", function (data) {
+        var myDonutChart = new Chart(ctx_donut, {
+                                                type: 'doughnut',
+                                                data: data,
+                                                options: options
+                                              });
+        $('#donutLegend').html(myDonutChart.generateLegend());
+        });
+    }
+
+    function showMonthInfo(evt) {
+        evt.preventDefault();
+
+    }
+
+
+</script>
+
+{% endblock %}

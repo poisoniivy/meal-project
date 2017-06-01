@@ -269,7 +269,8 @@ def show_recipe_info():
         ing_obj["name"] = ing_name
         ing_obj["amount"] = amount
         ing_obj["unit"] = unit
-        ingredient_list[i] = ing_obj
+        ing_obj["info"] = [ing_name, amount, unit]
+        ingredient_list["ing-"+str(i)] = [ing_name, amount, unit]
         i += 1
 
     rec_dict["ingredients"] = ingredient_list
@@ -450,6 +451,56 @@ def show_shopping_list():
 
     return render_template("shoppinglist.html", shopping_list=shopping_list,
                                                 week_start_date=week.start_date)
+
+
+@app.route('/analysis')
+def show_analytics():
+    """Shows analytics page."""
+    return render_template("analysis.html")
+
+
+@app.route('/meal-data.json')
+def meal_data():
+
+    if 'user_name' in session:
+        user_name = session['user_name']
+        user = User.query.filter(User.user_name==user_name).one()
+
+        week_data = meal_week_data(user.user_id)
+        print "weekdata: ", week_data
+        # month_data = meal_month_data(user_id)
+
+        chart_dict = {}
+        recipe_count = {}
+        labels = []
+        data = []
+
+        for meal_type, recipe in week_data:
+            recipe_count[recipe] = recipe_count.get(recipe, 0) + 1
+
+        for r in recipe_count.keys():
+            labels.append(r)
+            data.append(recipe_count[r])
+
+        chart_dict = {
+            "labels": labels,
+            "datasets": [
+                {   "label": "# of Recipes",
+                    "data": data,
+                }
+            ]
+        }
+
+        return jsonify(chart_dict)
+    else:
+        flash("You need to log in to access this page.")
+        return redirect("/")
+
+
+@app.route('/ingredient-data.json')
+def ingredient_data():
+    ingredient_dict = {}
+    return jsonify(ingredient_dict)
 
 
 if __name__ == "__main__":

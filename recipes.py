@@ -24,7 +24,6 @@ def get_ingredients_list(recipe_id):
 
         ingredient_list.append((ing_id, ing_name, cat_name, amount, unit))
 
-    print ingredient_list
     return ingredient_list
 
 
@@ -91,10 +90,12 @@ def add_ingredient_to_recipe(ingredient_id, recipe_id, unit_id, amount):
     # return recipe_ing.recipe_ing_id
 
 
-def add_ingredient(ingredient_name, category_id=None, ingredient_url=None):
+def add_ingredient(ingredient_name, ingredient_url=None):
     """Adds an ingredient to the ingredient table and returns the ing_id"""
+
+    c_id = Category.query.filter(Category.category_name=="Unknown").one().category_id
     new_ing = Ingredient(ingredient_name=ingredient_name,
-                            category_id=category_id,
+                            category_id=c_id,
                             ingredient_url=ingredient_url)
     db.session.add(new_ing)
     db.session.commit()

@@ -258,14 +258,28 @@ def show_recipe_info():
     rec = Recipe.query.get(recipe_id)
     rec_dict = {}
     rec_dict["recipe_name"] = rec.recipe_name
-    if "directions" in rec_dict:
-        rec_dict["directions"] = rec.directions
-    if "has_dairy" in rec_dict:
-        rec_dict["has_dairy"] = rec.has_dairy
-    if "has_gluten" in rec_dict:
-        rec_dict["has_gluten"] = rec.has_gluten
-    if "vegetarian" in rec_dict:
-        rec_dict["vegetarian"] = rec.vegetarian
+    rec_dict["directions"] = rec.directions
+
+    ingredient_info = get_ingredients_list(recipe_id)
+
+    ingredient_list = {}
+    i = 0
+    for ing_id, ing_name, cat_name, amount, unit in ingredient_info:
+        ing_obj = {}
+        ing_obj["name"] = ing_name
+        ing_obj["amount"] = amount
+        ing_obj["unit"] = unit
+        ingredient_list[i] = ing_obj
+        i += 1
+
+    rec_dict["ingredients"] = ingredient_list
+    rec_dict["num_ingredients"] = i
+
+    rec_dict["has_dairy"] = rec.has_dairy
+
+    rec_dict["has_gluten"] = rec.has_gluten
+
+    rec_dict["vegetarian"] = rec.vegetarian
 
     return jsonify(rec_dict)
 

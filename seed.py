@@ -245,7 +245,6 @@ def load_units():
 def load_categories():
 
     Category.query.delete()
-
     # Read categories.txt file and insert data
     for row in open("data/categories.txt"):
         row = row.rstrip()
@@ -254,6 +253,9 @@ def load_categories():
 
         # We need to add to the session or it won't ever be stored
         db.session.add(c)
+
+    unknown_category = Category(category_name="Unknown")
+    db.session.add(unknown_category)
 
     # Once we're done, we should commit our work
     db.session.commit()

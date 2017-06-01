@@ -27,10 +27,6 @@
     </div>
     <div id="recipe-info" style="display: inline-block">
         <p class="show-recipe-info" id="recipe-name">Recipe Name: </p>
-        <p class="show-recipe-info" id="recipe-directions">Directions: </p>
-        <p class="show-recipe-info" id="recipe-has-dairy">Dairy: </p>
-        <p class="show-recipe-info" id="recipe-has-gluten">Gluten: </p>
-        <p class="show-recipe-info" id="recipe-vegetarian">Vegetarian: </p>
         <p class="show-recipe-info" id="recipe-ingredients">Ingredients: </p>
         <form action="/edit-recipe"
             method="get" id="edit-recipe-form" class="show-recipe-info">
@@ -97,12 +93,26 @@
         evt.preventDefault(); 
         $(".show-recipe-info").show();
         $.get('/recipe-info.json', {'recipe_id': recipeID}, function(data) {
-            // console.log(data);
             $("#recipe-id").attr("value", recipeID);
             $("#recipe-name").html("Recipe Name: " + 
                 capitalize(data["recipe_name"]));
-            $("#recipe-directions").html("Recipe Directions: " + 
-                data["recipe_directions"]);
+
+            var ingredients = data["ingredients"];
+
+            var ingredientsRows = "";
+
+            for (i = 0; i < data["num_ingredients"]; i++) {
+                ing = ingredients[i];
+                ingredientsRows += "<tr><td>" + ing.amount + "</td>" +
+                    "<td>" + ing.unit + "</td>" +
+                    "<td>" + ing["name"] + "</td></tr>";
+            }
+
+            var ingredientsTableInfo = "Ingredients:<br><table><thead>" +
+            "<th>Amount</th><th>Unit</th><th>Ingredient</th></thead>" +
+            "<tbody>" + ingredientsRows + "</tbody></table>";
+
+            $("#recipe-ingredients").html(ingredientsTableInfo);
         });
 
     }

@@ -19,12 +19,12 @@
 
 {% if 'user_name' in session %}
 <nav class="navbar navbar-default">
-    <div class="container-fluid" id="logged-in-topnav">
+    <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">Eat.Plan.Love.</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="/user/{{ session['user_name'] }}">Home</a>
+            <li><a href="/user/{{ session['user_name'] }}">Home</a>
             <li><a href="/mealplan">Meal Plan</a></li>
             <li><a href="/recipes">Recipe Box</a></li>
             <li><a href="/analysis">Analytics</a></li>

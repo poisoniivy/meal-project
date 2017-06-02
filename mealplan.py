@@ -112,38 +112,38 @@ def edit_meals(meal_type_id, recipe_list, week_id, meal_date):
     db.session.commit()
 
 
-def meal_week_data(user_id):
-    """Returns tuples of number of recipes based on past week."""
+# def meal_week_data(user_id):
+#     """Returns tuples of number of recipes based on past week."""
 
-    # User's list of week ids to look in
-    weeks = User.query.get(user_id).weeks
-    w_id_list = [w.week_id for w in weeks]
+#     # User's list of week ids to look in
+#     weeks = User.query.get(user_id).weeks
+#     w_id_list = [w.week_id for w in weeks]
 
-    today = date.today()
-    # date that was a week ago
-    today_week = today + datetime.timedelta(days=-7)
+#     today = date.today()
+#     # date that was a week ago
+#     today_week = today + datetime.timedelta(days=-7)
 
-    q = db.session.query(Meal.meal_type_id, Recipe.recipe_name).\
-        join(MealRecipe, Recipe).filter(Meal.meal_date >= today_week,\
-            Meal.meal_date < today, Meal.week_id.in_(w_id_list)).all()
+#     q = db.session.query(Meal.meal_type_id, Recipe.recipe_name).\
+#         join(MealRecipe, Recipe).filter(Meal.meal_date >= today_week,\
+#             Meal.meal_date < today, Meal.week_id.in_(w_id_list)).all()
 
-    return q
+#     return q
 
 
-def meal_month_data(user_id):
-    """Returns tuples of recipes based on past month."""
+# def meal_month_data(user_id):
+#     """Returns tuples of recipes based on past month."""
 
-    weeks = User.query.get(user_id).weeks
-    w_id_list = [w.week_id for w in weeks]
+#     weeks = User.query.get(user_id).weeks
+#     w_id_list = [w.week_id for w in weeks]
 
-    today = date.today()
-    today_month = today + datetime.timedelta(days=-30)
+#     today = date.today()
+#     today_month = today + datetime.timedelta(days=-30)
 
-    q = db.session.query(Meal.meal_type_id, Recipe.recipe_name).\
-        join(MealRecipe, Recipe).filter(Meal.meal_date >= today_month,\
-            Meal.meal_date < today, Meal.week_id.in_(w_id_list)).all()
+#     q = db.session.query(Meal.meal_type_id, Recipe.recipe_name).\
+#         join(MealRecipe, Recipe).filter(Meal.meal_date >= today_month,\
+#             Meal.meal_date < today, Meal.week_id.in_(w_id_list)).all()
 
-    return q
+#     return q
 
 
 ##############################################################################

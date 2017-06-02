@@ -6,10 +6,9 @@ from flask import (Flask, render_template, redirect, request, flash,
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import *
-
 from mealplan import *
-
 from recipes import *
+from charts import *
 
 from datetime import date
 
@@ -264,7 +263,7 @@ def show_recipe_info():
 
     ingredient_list = {}
     i = 0
-    for ing_id, ing_name, cat_name, amount, unit in ingredient_info:
+    for ing_id, ing_name, cat_name, amount, unit, url in ingredient_info:
         ing_obj = {}
         ing_obj["name"] = ing_name
         ing_obj["amount"] = amount
@@ -442,16 +441,25 @@ def add_recipe():
 @app.route('/shoppinglist')
 def show_shopping_list():
     """shows users shopping list."""
-    week_id = request.args.get("week_id")
+    if 'user_name' in session:
+        user_name = session['user_name']
+        user = User.query.filter(User.user_name==user_name).one()
 
-    week = Week.query.get(week_id)
-    recipe_list = get_all_recipes_from_week(week_id)
+        week_id = request.args.get("week_id")
 
-    shopping_list = get_shopping_list(recipe_list)
+        week = Week.query.get(week_id)
+        recipe_list = get_all_recipes_from_week(week_id)
 
-    return render_template("shoppinglist.html", shopping_list=shopping_list,
-                                                week_start_date=week.start_date)
+        shopping_list = get_shopping_list(recipe_list)
 
+        return render_template("shoppinglist.html",
+                                    shopping_list=shopping_list,
+                                    week_start_date=week.start_date,
+                                    email=user.email)
+
+    else:
+        flash("You need to log in to access this page.")
+        return redirect("/")
 
 @app.route('/analysis')
 def show_analytics():
@@ -459,16 +467,17 @@ def show_analytics():
     return render_template("analysis.html")
 
 
-@app.route('/meal-data.json')
-def meal_data():
+@app.route('/meal-week-data.json')
+def get_meal_week_data():
 
     if 'user_name' in session:
         user_name = session['user_name']
         user = User.query.filter(User.user_name==user_name).one()
 
+        today = date.today()
+        today_week = today + datetime.timedelta(days=-7)
+
         week_data = meal_week_data(user.user_id)
-        print "weekdata: ", week_data
-        # month_data = meal_month_data(user_id)
 
         chart_dict = {}
         recipe_count = {}
@@ -496,6 +505,18 @@ def meal_data():
         flash("You need to log in to access this page.")
         return redirect("/")
 
+
+@app.route('/meal-month-data.json')
+def get_meal_month_data():
+    user_name = session['user_name']
+    user = User.query.filter(User.user_name == user_name).one()
+
+    today = date.today()
+    lookback_date_30 = today + datetime.timedelta(days=-30)
+
+    data = meal_month_data(user.user_id, lookback_date_30)
+
+    return jsonify(data)
 
 @app.route('/ingredient-data.json')
 def ingredient_data():

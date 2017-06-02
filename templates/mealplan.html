@@ -28,6 +28,9 @@ tr:nth-child(even) {
 
 {% block content %}
 
+<div class="container">
+<div class="row col-xs-12">
+
 <h1 id="{{ week_id }}">Meal Plan</h1>
 <form action="/meal-plan-week" class="go-to-week">
     <select name="select-week-id">
@@ -319,6 +322,8 @@ tr:nth-child(even) {
     <input type="submit" value="Shopping List" >
 </form>
 
+</div>
+</div>
 
 <script src="https://code.jquery.com/jquery.js"></script>
 

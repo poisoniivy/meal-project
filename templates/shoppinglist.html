@@ -5,17 +5,47 @@
 
 {% block content %}
 
+<div class="container">
+<div class="row col-xs-12">
+
 <h1>Shopping List for Week: {{ week_start_date.strftime('%-m/%d') }}</h1>
 
-{% for category in shopping_list.keys() %}
-{{ category }}
+<input type="button" id="email-list-btn" name="email-btn" value="Email Me List">
+<input type="hidden" id="email" name="email" value="{{ email }}">
 <br>
-
+{% for category in shopping_list.keys() %}
+<strong> {{ category }} </strong>
+<br>
 {% for ingredient in shopping_list[category].values() %}
-<li>{{ ingredient["amount"] }} {{ ingredient["unit"] }} {{ ingredient["name"] }}
+<li class="ingredient-list-item">
+    {% if "url" in ingredient %} 
+        <img src="{{ ingredient['url'] }}" border="1" height="50" width="50">
+    {% endif %}
+    {{ ingredient["amount"] }} {{ ingredient["unit"] }} {{ ingredient["name"] }} 
 </li>
 {% endfor %}
-
+</ul>
 {% endfor %}
+
+</div>
+</div>
+
+
+<script>
+    $("#email-list-btn").on("click", emailList)
+
+    function emailList(evt) {
+        var email = $("input#email").val();
+        evt.preventDefault();
+        var text;
+        for (var i = 0; i < $(".ingredient-list-item").length; i++) {
+            text = text + "<li>" + 
+                        $(".ingredient-list-item")[i].innerText +
+                        "</li>";
+        }
+        window.open('mailto:' + email + '?subject=Shopping+List&body='+text);
+    }
+</script>
+
 
 {% endblock %}

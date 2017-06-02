@@ -21,8 +21,9 @@ def get_ingredients_list(recipe_id):
         cat_name = ing.category.category_name
         unit = ril.unit.unit_long
         amount = ril.amt
+        url = ing.ingredient_url
 
-        ingredient_list.append((ing_id, ing_name, cat_name, amount, unit))
+        ingredient_list.append((ing_id, ing_name, cat_name, amount, unit, url))
 
     return ingredient_list
 
@@ -49,7 +50,7 @@ def get_shopping_list(recipe_list):
         print recipe
         ingredient_info = get_ingredients_list(recipe.recipe_id)
 
-        for ing_id, ing_name, cat_name, amount, unit in ingredient_info:
+        for ing_id, ing_name, cat_name, amount, unit, url in ingredient_info:
 
             # if category already exists or ingredient already in category list
             category_list = cat_name.split(";")
@@ -64,6 +65,7 @@ def get_shopping_list(recipe_list):
                     ing_obj["name"] = ing_name
                     ing_obj["amount"] = amount
                     ing_obj["unit"] = unit
+                    ing_obj["url"] = url
                     shopping_list[category_name][ing_id] = ing_obj
             else:
                 ing_obj = {}

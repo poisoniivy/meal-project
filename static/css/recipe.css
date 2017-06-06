@@ -1,0 +1,24 @@
+/*CSS for Recipe page */
+
+#meal-filter,  #recipe-info {
+    display: inline-block;
+}
+
+#recipe-info {
+    vertical-align: top;
+}
+
+.table-responsive {
+    height:300px;
+}
+
+tbody {
+    overflow-y:auto;
+    height:300px;
+    width:100%;
+}
+
+.panel {
+    height:500px;
+    overflow-y:auto;
+}

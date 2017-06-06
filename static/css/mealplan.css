@@ -10,19 +10,13 @@ table {
 }
 
 th {
-    /*border: 1px solid #dddddd;*/
     text-align: center;
     font-weight: bold;
-    /*padding: 8px;*/
 }
 
 td {
     text-align: center;
 }
-
-/*tr:nth-child(even) {
-    background-color: #dddddd;
-}*/
 
 .recipe-dropdown {
     display: none;

@@ -1,0 +1,16 @@
+/*CSS for Chart page */
+
+.mealplan-chart {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
+}
+
+.chart-legend li span {
+    width: 20%;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+}

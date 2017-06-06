@@ -3,50 +3,54 @@
 
 {% block title %} My Recipe List {% endblock %}
 
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/recipe.css">
+{% endblock %}
+
 {% block content %}
 
 <div class="container">
+
 <div class="row col-xs-12">
+<h1>Recipe Box</h1><h4>Add, Edit, or Delete your recipes here.</h4>
+</div>
 
-
-<h1>Here's a list of all your recipes</h1>
-
-<div>
-    <div style="display: inline-block">
+<div class="row">
+    <div class="col-xs-6" id="meal-filter">
         <div>
             <button type="button" id="recipes-btn-all"
-                class="btn btn-default">All</button>
+                class="btn btn-default btn-xs">All</button>
             <button type="button" id="recipes-btn-br"
-                class="btn btn-default">Breakfast</button>
+                class="btn btn-default btn-xs">Breakfast</button>
             <button type="button" id="recipes-btn-lu"
-                class="btn btn-default">Lunch</button>
+                class="btn btn-default btn-xs">Lunch</button>
             <button type="button" id="recipes-btn-din"
-                class="btn btn-default">Dinner</button>
+                class="btn btn-default btn-xs">Dinner</button>
             <button type="button" id="recipes-btn-snck"
-                class="btn btn-default">Snacks</button>
+                class="btn btn-default btn-xs">Snacks</button>
         </div>
-        <div>
-            <ul id="recipe-list">
-            </ul>
+        <div class="panel panel-default">
+            <table class="table table-responsive">
+                <tbody id="recipe-list">
+                </tbody>
+            </table>
         </div>
         <br>
         <form action="/add-recipe" id="add-recipe-form">
-            <input type="submit" value="Add Recipe">
+            <input type="submit" value="Add Recipe" class="btn btn-default">
         </form>
     </div>
-    <div id="recipe-info" style="display: inline-block">
-        <p class="show-recipe-info" id="recipe-name">Recipe Name: </p>
+    <div class="col-xs-6" id="recipe-info">
+        <strong><p class="show-recipe-info" id="recipe-name"></p></strong>
         <p class="show-recipe-info" id="recipe-ingredients">Ingredients: </p>
-        <form action="/edit-recipe"
-            method="get" id="edit-recipe-form" class="show-recipe-info">
+        <form action="/edit-recipe" class="show-recipe-info"
+            method="get" id="edit-recipe-form">
             <input type="hidden" id="recipe-id" name="recipe-id">
-            <input type="submit" value="Edit Recipe">
+            <input type="submit" value="Edit Recipe" class="btn btn-default">
         </form>
     </div>
 </div>
 
-
-</div>
 </div>
 
 <script>
@@ -63,11 +67,13 @@
     function showAll() {
         $("#recipe-list").html("");
         $(".show-recipe-info").hide();
+
         var htmlText = "{% for recipe in recipes %}" +
-                "<li><a href='/recipes/{{ recipe.recipe_id }}' " +
+                "<tr><td class='col-xs-8'><a href='/recipes/{{ recipe.recipe_id }}' " +
                 "onclick='showRecipeInfo(event, {{ recipe.recipe_id}} );'>" +
-                    "{{ recipe.recipe_name|capitalize() }} </a></li>" +
+                    "{{ recipe.recipe_name|capitalize() }} </a></td></tr>" +
             "{% endfor %}";
+
         $("#recipe-list").append(htmlText);
     }
 
@@ -88,16 +94,12 @@
         else {
             for (var i = 0; i<data.length; i++) {
 
-                var htmlText = "<li><a href='/recipes/" + data[i].id + 
-                    "' onclick='showRecipeInfo(event, " + data[i].id + ");>" + 
-                    capitalize(data[i].name) +  "</a></li>";
-
-                var html2 = "<li><a href='#' id='recipe-info-link' " +
+                var htmlText = "<tr><td class='col-xs-8'>" + 
+                            "<a href='#' id='recipe-info-link' " +
                             "onclick='showRecipeInfo(event, " + data[i].id +
-                            ");' >" + capitalize(data[i].name) + "</a></li>";
+                            ");' >" + capitalize(data[i].name) + "</a></td></tr>";
                 
-
-                $("#recipe-list").append(html2);
+                $("#recipe-list").append(htmlText);
             }
         }
     }
@@ -107,8 +109,7 @@
         $(".show-recipe-info").show();
         $.get('/recipe-info.json', {'recipe_id': recipeID}, function(data) {
             $("#recipe-id").attr("value", recipeID);
-            $("#recipe-name").html("Recipe Name: " + 
-                capitalize(data["recipe_name"]));
+            $("#recipe-name").html(capitalize(data["recipe_name"]));
 
             var ingredients = data["ingredients"];
             console.log(data);

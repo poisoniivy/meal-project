@@ -23,7 +23,7 @@ def meal_week_data(user_id):
     return q
 
 
-def meal_month_data(user_id, lookback_date):
+def prepare_meal_data(user_id, lookback_date):
     """Returns tuples of recipes based on past month."""
 
     weeks = User.query.get(user_id).weeks
@@ -40,6 +40,9 @@ def meal_month_data(user_id, lookback_date):
     recipe_count = {}
     labels = []
     data = []
+    colors = ['#4ABDAC', '#FC4A1A', '#B0FFF3', '#64FFE8', '#587F7A',\
+    '#50CCBA', '#FF8767', '#FF4B1A', '#7F4433', '#CC3C15',\
+    '#F7B733', '#ffd681']
 
     for meal_type, recipe in q:
         recipe_count[recipe] = recipe_count.get(recipe, 0) + 1
@@ -49,10 +52,11 @@ def meal_month_data(user_id, lookback_date):
         data.append(recipe_count[r])
 
     chart_dict = {
-        "labels": labels,
+        "labels": labels[:12],
         "datasets": [
             {   "label": "# of Recipes",
-                "data": data,
+                "backgroundColor": colors,
+                "data": data[:12],
             }
         ]
     }

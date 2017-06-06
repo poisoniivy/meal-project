@@ -79,7 +79,7 @@ def login():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    print email, password
+    # print email, password
 
     # If the user email is not in the database
     if not User.query.filter(User.email==email).all():
@@ -184,7 +184,7 @@ def edit_meal_plan():
         while i <= 7:
             day = request.json["day"+str(i)]
             meal_date = all_days[i-1]
-            print "meal_date", meal_date
+            # print "meal_date", meal_date
 
             # import pdb; pdb.set_trace()
             if day["breakfast"] != []:
@@ -229,7 +229,7 @@ def create_new_meal_plan():
         # If the week already exists
         if Week.query.filter(Week.user_id==user.user_id,
                              Week.start_date==start_date).all() != []:
-            flash("Week already exists.")
+            # flash("Week already exists.")
             return show_meal_plan(start_date)
         # Week does not exist, need to create it
         else:
@@ -292,19 +292,19 @@ def show_recipe_info():
 def filter_recipes():
     """Returns a list of recipes from filter."""
     meal_type = request.args.get("meal_type")
-    print "meal_type: ", meal_type
+    # print "meal_type: ", meal_type
     meal_list = Meal.query.filter(Meal.meal_type_id==meal_type).all()
 
     recipe_list = []
     for m in meal_list:
-        print m.recipes
+        # print m.recipes
         if m.recipes != None:
             recipe_list = recipe_list + m.recipes
 
     recipe_list = list(set(recipe_list))
     recipes = [{'id':rec.recipe_id, 'name':rec.recipe_name,'directions':rec.directions} for rec in recipe_list]
 
-    print recipes
+    # print recipes
     return jsonify(recipes)
 
 
@@ -408,7 +408,7 @@ def add_recipe():
         ingredient_dict = request.json["ingredients"]
 
         # import pdb; pdb.set_trace()
-        print recipe_name, directions, ingredient_dict
+        # print recipe_name, directions, ingredient_dict
 
         # Adding recipe to database
         # Future: add in booleans
@@ -434,7 +434,7 @@ def add_recipe():
                 ing_id = add_ingredient(str(ing_name))
                 add_ingredient_to_recipe(ing_id, recipe_id,
                     str(unit), float(amount))
-        print "finished adding ingredients"
+        # print "finished adding ingredients"
         return jsonify("/recipes")
 
     else:
@@ -474,41 +474,15 @@ def show_analytics():
 @app.route('/meal-week-data.json')
 def get_meal_week_data():
 
-    if 'user_name' in session:
-        user_name = session['user_name']
-        user = User.query.filter(User.user_name==user_name).one()
+    user_name = session['user_name']
+    user = User.query.filter(User.user_name==user_name).one()
 
-        today = date.today()
-        today_week = today + datetime.timedelta(days=-7)
+    today = date.today()
+    lookback_date_7 = today + datetime.timedelta(days=-7)
 
-        week_data = meal_week_data(user.user_id)
+    data = prepare_meal_data(user.user_id, lookback_date_7)
 
-        chart_dict = {}
-        recipe_count = {}
-        labels = []
-        data = []
-
-        for meal_type, recipe in week_data:
-            recipe_count[recipe] = recipe_count.get(recipe, 0) + 1
-
-        for r in recipe_count.keys():
-            labels.append(r)
-            data.append(recipe_count[r])
-
-        chart_dict = {
-            "labels": labels,
-            "datasets": [
-                {   "label": "# of Recipes",
-                    "data": data,
-                }
-            ]
-        }
-
-        return jsonify(chart_dict)
-    else:
-        flash("You need to log in to access this page.")
-        return redirect("/")
-
+    return jsonify(data)
 
 @app.route('/meal-month-data.json')
 def get_meal_month_data():
@@ -518,7 +492,7 @@ def get_meal_month_data():
     today = date.today()
     lookback_date_30 = today + datetime.timedelta(days=-30)
 
-    data = meal_month_data(user.user_id, lookback_date_30)
+    data = prepare_meal_data(user.user_id, lookback_date_30)
 
     return jsonify(data)
 

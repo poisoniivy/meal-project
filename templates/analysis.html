@@ -2,6 +2,11 @@
 
 
 {% block title %} Meal Analytics {% endblock %}
+
+{% block style %} 
+<link rel="stylesheet" type="text/css" href="/static/css/chart.css">
+{% endblock %}
+
 {% block js %} 
 <script src=
   "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.js">
@@ -11,35 +16,40 @@
 {% block content %}
 
 <div class="container">
-<div class="row col-xs-12">
-
 
 <h1>Analysis of your Meal Plan</h1>
 
-<input type="button" id="show-all-meals-info" value="All Meals">
+<!-- <input type="button" id="show-all-meals-info" value="All Meals">
 <input type="button" id="show-breakfast-info" value="Breakfast">
 <input type="button" id="show-lunch-info" value="Lunch">
 <input type="button" id="show-dinner-info" value="Dinner">
-<input type="button" id="show-snacks-info" value="Snacks">
+<input type="button" id="show-snacks-info" value="Snacks"> -->
 <br>
-<div class="mealplan-chart">
-    <p class="week-info">Last 7 Days</p>
-    <canvas id="donutChart"></canvas>
-    <div id="donutLegend" class="chart-legend"></div>
-
-    <p class="month-info">Last 30 Days</p>
-    <canvas id="donutMonthChart"></canvas>
-    <div id="donutMonthLegend" class="chart-month-legend"></div>
-
-<div>
-
-</div>
+<div class="row">
+    <p class="week-info">Most Popular Meals Last 7 Days</p>
+    <div id="donutLegend" class="chart-legend col-xs-6"></div>
+    <div class="mealplan-chart col-xs-6"><canvas id="donutChart">
+    </canvas></div>
 </div>
 
+<div class="row">
+    <p class="month-info">Most Popular Meals Last 30 Days</p>
+    <div id="donutMonthLegend" class="chart-legend"></div>
+    <div class="mealplan-chart"><canvas id="donutMonthChart">
+    </canvas></div>
+    <!-- <div id="donutMonthLegend" class="chart-legend"></div> -->
+</div>
+
+</div>
 
 <script>
 
-    var options = { responsive: true };
+    var options = { 
+        responsive: true, 
+        legend: {
+            display: false
+         }, 
+    };
 
     var ctx_donut = $("#donutChart").get(0).getContext("2d");
 
@@ -52,21 +62,6 @@
         $('#donutLegend').html(myDonutChart.generateLegend());
     });
 
-    // $("#show-week-info").on("click", showWeekInfo);
-    // $("#show-month-info").on("click", showMonthInfo);
-
-    // function showWeekInfo(evt) {
-    //     evt.preventDefault();
-
-    //     $.get("/meal-week-data.json", function (data) {
-    //     var myDonutChart = new Chart(ctx_donut, {
-    //                                             type: 'doughnut',
-    //                                             data: data,
-    //                                             options: options
-    //                                           });
-    //     $('#donutLegend').html(myDonutChart.generateLegend());
-    //     });
-    // }
 
     var ctx_month_donut = $("#donutMonthChart").get(0).getContext("2d");
 
@@ -79,18 +74,18 @@
         $('#donutMonthLegend').html(myDonutChart.generateLegend());
         });
 
-    function showMonthInfo(evt) {
-        evt.preventDefault();
+    // function showMonthInfo(evt) {
+    //     evt.preventDefault();
 
-        $.get("/meal-month-data.json", function (data) {
-        var myDonutChart = new Chart(ctx_month_donut, {
-                                                type: 'doughnut',
-                                                data: data,
-                                                options: options
-                                              });
-        $('#donutLegend').html(myDonutChart.generateLegend());
-        });
-    }
+    //     $.get("/meal-month-data.json", function (data) {
+    //     var myDonutChart = new Chart(ctx_month_donut, {
+    //                                             type: 'doughnut',
+    //                                             data: data,
+    //                                             options: options
+    //                                           });
+    //     $('#donutLegend').html(myDonutChart.generateLegend());
+    //     });
+    // }
 
 </script>
 

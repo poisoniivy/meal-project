@@ -3,6 +3,11 @@
 
 {% block title %} Add Recipe {% endblock %}
 
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/recipe.css">
+{% endblock %}
+
+
 {% block content %}
 
 <div class="container">
@@ -14,11 +19,12 @@
 
 
 <form action="/add-recipe" method="post" id="add-recipe-form">
-
-    Recipe Name<input type="text" id="edit-name" name="edit-name"
-        default="Enter name">
+    <div class="input-group">
+        <label for="comment">Recipe Name</label>
+        <input type="text" class="form-control" id="edit-name" 
+        name="edit-name" default="Enter name">
+    </div>
     <br>
-
     Ingredients:
     <table class="table">
         <thead>
@@ -29,17 +35,17 @@
         <tbody class="ingredient-additions">
         </tbody>
     </table>
-
+    <input type="button" name="add-ingredient" value="Add Ingredient"
+        class="add-ingredient-line-btn btn btn-default">
     <br>
-    <input type="button" name="add-ingredient" class="add-ingredient-line-btn"
-        value="Add Ingredient">
+    <div class="form-group">
+        <label for="comment">Directions</label>
+        <textarea class="form-control" rows="5" id="edit-directions" 
+            name="directions"></textarea>
+    </div>
     <br>
-    Directions<br>
-    <textarea rows="4" cols="50" name="directions" id="edit-directions">
-        Enter directions here...
-    </textarea>
-    <br>
-    <input type="submit" id="edit-recipe-btn" value="Save">
+    <input type="submit" id="edit-recipe-btn" value="Save" class="btn btn-default">
+    <input type="button" id="cancel-btn" value="Cancel" class="btn btn-default">
 </form>
 
 </div>
@@ -80,6 +86,9 @@
         evt.preventDefault(); $(this).parent('div').remove(); x--;
     })
 
+    $("#cancel-btn").on("click", function() {
+        window.location.replace("/recipes")
+    });
 
     $("#add-recipe-form").on("submit", addRecipe);
 

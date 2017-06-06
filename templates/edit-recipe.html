@@ -3,20 +3,23 @@
 
 {% block title %} Edit Recipe {% endblock %}
 
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/recipe.css">
+{% endblock %}
+
 {% block content %}
 
 <div class="container">
 <div class="row col-xs-12">
 
-
 <h1>Edit Recipe: {{ recipe.recipe_name|capitalize() }}</h1>
 
 <form id="edit-recipe-form">
-
-    <input type="hidden" id="recipe-id" name="recipe-id" 
-        value="{{ recipe.recipe_id }}">
-    Recipe Name<input type="text" id="edit-name" name="edit-name"
-        value="{{ recipe.recipe_name }}">
+    <div class="input-group">
+        <label for="comment">Recipe Name</label>
+        <input type="text" class="form-control" id="edit-name" 
+        name="edit-name" value="{{ recipe.recipe_name }}">
+    </div>
     <br>
     Ingredients:
     <table class="table">
@@ -52,32 +55,29 @@
                     id="ingredient-name-{{ outer_loop.index }}"
                     value="{{ rec_ing.ingredient.ingredient_name }}">
                 </td>
-                <br>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    <input type="button" name="add-ingredient" value="Add Ingredient"
+        class="add-ingredient-line-btn btn btn-default">
+    <br><br>
+    <div class="form-group">
+        <label for="comment">Directions</label>
+        <textarea class="form-control" rows="5" id="edit-directions" 
+            name="directions">
+            {% if recipe.directions is not none %}
+            {{ recipe.directions }}
+            {% endif %}
+        </textarea>
+    </div>
     <br>
-    <input type="button" name="add-ingredient" class="add-ingredient-line-btn"
-        value="Add Ingredient">
-    <br>
-    Directions<br>
-    <textarea rows="4" cols="50" name="directions" id="edit-directions">
-        {% if recipe.directions is none %}
-        Enter directions here...
-        {% else %} {{ recipe.directions }}
-        {% endif %}
-    </textarea>
-    <br>
-    <input type="submit" id="edit-recipe-btn" value="Save">
-</form>
-
-<form action="/delete-recipe" method="post" id="delete-recipe-form">
     <input type="hidden" id="recipe-id" name="recipe-id" 
         value="{{ recipe.recipe_id }}">
-    <input type="submit" id="remove-recipe-btn" value="Delete">
+    <input type="submit" id="edit-recipe-btn" value="Save" class="btn btn-default">
+    <input type="button" id="remove-recipe-btn" value="Delete" class="btn btn-default">
+    <input type="button" id="cancel-btn" value="Cancel" class="btn btn-default">
 </form>
-
 
 </div>
 </div>
@@ -118,7 +118,7 @@
     })
 
 
-    $("#delete-recipe-form").on("submit", deleteRecipe);
+    $("#remove-recipe-btn").on("click", deleteRecipe);
 
     function deleteRecipe(evt) {
         evt.preventDefault();
@@ -131,6 +131,11 @@
             });
         }
     }
+
+    $("#cancel-btn").on("click", function() {
+        window.location.replace("/recipes")
+    });
+
 
     $("#edit-recipe-form").on("submit", editRecipe);
 

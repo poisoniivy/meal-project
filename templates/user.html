@@ -8,18 +8,30 @@
 <div class="container">
 <div class="row col-xs-12">
 
-<h1>Welcome to your Meal Planner</h1>
+<div class="jumbotron text-center">
+  <h1>Welcome to your Meal Planner</h1>
+  <p>description of something!</p> 
+</div>
 
-<h2>Hi {{ user.user_name }}! </h2>
+<div class="row">
+    <div class="col-xs-4">
+        <h2>Go to your Meal Plan</h2>
+        <img src="/static/img/calendar.jpeg" alt="calendar" class="img-rounded" width="304" height="236">
+        <p><a href="/mealplan">Mealplan</a></p>
+    </div>
 
-<h2>Go to your Meal Plan</h2>
-<p><a href="/mealplan">Mealplan</a></p>
+    <div class="col-xs-4">
+        <h2>Look at your Recipe Box</h2>
+        <img src="/static/img/meals.jpeg" alt="meals" class="img-rounded" width="304" height="236">
+        <p><a href="/recipes">Recipes</a></p>
+    </div>
 
-<h2>Look at your Recipe Box</h2>
-<p><a href="/recipes">Recipes</a></p>
-
-<h2>Go to your Shopping List</h2>
-<p><a href="/shoppinglist">Shopping List</a></p>
+    <div class="col-xs-4">
+        <h2>Go to your Shopping List</h2>
+        <img src="/static/img/grocery.jpeg" alt="grocery" class="img-rounded" width="304" height="236">
+        <p><a href="/shoppinglist">Shopping List</a></p>
+    </div>
+</div>
 
 </div>
 </div>

@@ -2,55 +2,50 @@
 
 
 {% block title %} My Meal Plan {% endblock %}
+
 {% block style %} 
-
-table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-}
-
-td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-}
-
-tr:nth-child(even) {
-    background-color: #dddddd;
-}
-
-.recipe-dropdown {
-    display: none;
-}
-
+<link rel="stylesheet" type="text/css" href="/static/css/mealplan.css">
 {% endblock %}
 
 {% block content %}
 
 <div class="container">
-<div class="row col-xs-12">
+<div class="row col-12">
 
 <h1 id="{{ week_id }}">Meal Plan</h1>
-<form action="/meal-plan-week" class="go-to-week">
-    <select name="select-week-id">
-        <option disabled selected>Pick Week</option>
-        {% for w_date, w_id in week_list %}
-        <option value="{{ w_id }}">Week of {{ w_date.strftime('%-m/%d') }}
-        </option>
-        {% endfor %}
-    </select>
-    <input type="submit" id="select-week-btn" value="Select Week">
-</form>
+
+<div class="row">
+    <div class="col-6 meal-week-picker">
+        <form action="/meal-plan-week" class="go-to-week">
+            <select name="select-week-id">
+                <option disabled selected>Pick Week</option>
+                {% for w_date, w_id in week_list %}
+                <option value="{{ w_id }}">Week of {{ w_date.strftime('%-m/%d') }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-default" id="select-week-btn">
+                <i class="glyphicon glyphicon-calendar"></i> Select Week</button>
+        </form>
+    </div>
+    <div class="col-6 shopping-list-info">
+        <form action="/shoppinglist">
+            <input type="hidden" name="week_id" value="{{ week_id }}">
+            <button type="submit" class="btn btn-default">
+                <i class="glyphicon glyphicon-list"></i> Shopping List
+            </button>
+        </form>
+    </div>
+</div>
 
 <form action="/edit-plan" class="edit" id="meal-plan-form">
 
 <div>
-<table id="meal-plan-table" style="width:80%">
+<table id="meal-plan-table" class="table table-hover">
     <tr>
-        <th>Meal</th>
+        <th><strong>Meal</strong></th>
         {% for day in all_days %}
-            <th>{{ day.strftime('%a %-m/%d') }} </th>
+            <th><strong>{{ day.strftime('%a %-m/%d') }}</strong></th>
         {% endfor %}
     </tr>
 
@@ -319,7 +314,10 @@ tr:nth-child(even) {
 
 <form action="/shoppinglist">
     <input type="hidden" name="week_id" value="{{ week_id }}">
-    <input type="submit" value="Shopping List" >
+    <!-- <input type="submit" value="Shopping List" > -->
+    <button type="submit" class="btn btn-default">
+        <i class="glyphicon glyphicon-list"></i> Shopping List
+    </button>
 </form>
 
 </div>

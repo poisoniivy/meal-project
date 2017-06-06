@@ -3,14 +3,26 @@
 <head>
 
 <title>{% block title %}TITLE HERE{% endblock %}</title>
-<style>{% block style %}STYLE HERE{% endblock %}</style>
-<script src="https://code.jquery.com/jquery.js"></script>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Arvo:400,700|Open+Sans:400,700" 
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+
+{% block style %}{% endblock %}
 {% block js %}{% endblock %}
 
 </head>
@@ -29,7 +41,10 @@
             <li><a href="/recipes">Recipe Box</a></li>
             <li><a href="/analysis">Analytics</a></li>
             <li><a href="#about">About</a></li>
-            <li><a href="/logout">Log Out</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><p class="navbar-text">Signed in as {{ session['user_name'] }} <span class="glyphicon glyphicon-user"></span></p></li>
+            <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
         </ul>
     </div>
 </nav>
@@ -39,7 +54,7 @@
 <!-- Show flashed messages -->
 {% with messages = get_flashed_messages() %}
 {% for message in messages %}
-<div class="alert alert-success alert-dismissable">
+<div class="alert alert-success alert-dismissable row col-xs-12" role="alert">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
     <strong>{{ message }}</strong>
 </div>
@@ -50,6 +65,14 @@
 
 
 {% block content %} put your content here {% endblock %}
+<!-- Disappearing flashed messages. -->
+<script>
+    window.setTimeout(function() {
+        $(".alert").fadeTo(500, 0).slideUp(500, function(){
+            $(this).remove(); 
+        });
+    }, 4000);
+</script>
 
 </body>
 </html>

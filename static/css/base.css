@@ -1,0 +1,104 @@
+/*CSS for home page*/
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Open Sans', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Arvo', serif;
+    font-weight:  700;
+}
+
+.navbar, .navbar-default .navbar-brand, .navbar-default .navbar-nav li a {
+/*    background: transparent;
+    border: none;
+    border-radius: 0;*/
+/*    background-color: #dcc7a4;
+    border-color: #dcc7a4;*/
+    font-family: 'Arvo', serif;
+    font-size: 18px;
+}
+
+/*.navbar-default .navbar-brand:hover, .navbar-default .navbar-nav li a:hover {
+  color: #E1B735;
+}*/
+
+.main{
+    height: 100%;
+    width: 100%;
+}
+
+.navbar-default {
+  background-color: #dcc7a4;
+  border-color: #dcc7a4;
+}
+.navbar-default .navbar-brand {
+  color: #6b7a8f;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+  color: #f7882f;
+}
+.navbar-default .navbar-text {
+  color: #6b7a8f;
+}
+.navbar-default .navbar-nav > li > a {
+  color: #6b7a8f;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: #f7882f;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+  color: #f7882f;
+  background-color: #dcc7a4;
+}
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+  color: #f7882f;
+  background-color: #dcc7a4;
+}
+.navbar-default .navbar-toggle {
+  border-color: #dcc7a4;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+  background-color: #dcc7a4;
+}
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #6b7a8f;
+}
+.navbar-default .navbar-collapse,
+.navbar-default .navbar-form {
+  border-color: #6b7a8f;
+}
+.navbar-default .navbar-link {
+  color: #6b7a8f;
+}
+.navbar-default .navbar-link:hover {
+  color: #f7882f;
+}
+
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+    color: #6b7a8f;
+  }
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #f7882f;
+  }
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #f7882f;
+    background-color: #dcc7a4;
+  }
+}
+
+

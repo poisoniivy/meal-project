@@ -1,6 +1,6 @@
 # Eat.Plan.Love.
 
-Eat.Plan.Love. is a meal planner app that allows users to plan meals for the week, able to add family recipes that a user can choose from, and also creates a shopping list that aggregates all the ingredients to take to a grocery store. 
+Eat.Plan.Love. is a meal planner app that allows users to plan meals for the week, add family recipes to use in meal planning, and also create a shopping list that aggregates all the ingredients to take to a grocery store. It reduces stress and saves time so you don't need to think about what to eat every night and not need to run to the store if you don't have an ingredient.
 
 ## Technology
 <b>Backend:</b> Python, Flask, PostgreSQL, SQLAlchemy</br>

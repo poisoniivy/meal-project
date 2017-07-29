@@ -27,17 +27,24 @@
 <br>
 <div class="row">
     <p class="week-info">Most Popular Meals Last 7 Days</p>
-    <div id="donutLegend" class="chart-legend col-xs-6"></div>
-    <div class="mealplan-chart col-xs-6"><canvas id="donutChart">
-    </canvas></div>
+    <div class="col-xs-3">
+        <div id="donutLegend" class="chart-legend"></div>
+    </div>
+    <div class="col-xs-9">
+        <div class="mealplan-chart"><canvas id="donutChart">
+        </canvas></div>
+    </div>
 </div>
 
 <div class="row">
     <p class="month-info">Most Popular Meals Last 30 Days</p>
-    <div id="donutMonthLegend" class="chart-legend"></div>
-    <div class="mealplan-chart"><canvas id="donutMonthChart">
-    </canvas></div>
-    <!-- <div id="donutMonthLegend" class="chart-legend"></div> -->
+    <div class="col-xs-3">
+        <div id="donutMonthLegend" class="chart-legend"></div>
+    </div>
+    <div class="col-xs-9">
+        <div class="mealplan-chart"><canvas id="donutMonthChart">
+        </canvas></div>
+    </div>
 </div>
 
 </div>
@@ -47,8 +54,9 @@
     var options = { 
         responsive: true, 
         legend: {
-            display: false
-         }, 
+            display: false,
+            position: 'right',
+        }, 
     };
 
     var ctx_donut = $("#donutChart").get(0).getContext("2d");

@@ -18,6 +18,10 @@ tbody {
     width:100%;
 }
 
+h1 {
+    color: #FC4A1A;
+}
+
 .panel {
     height:500px;
     overflow-y:auto;

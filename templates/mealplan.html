@@ -13,22 +13,11 @@
 <div class="container">
 
 <div class="row col-12">
-<h1 id="{{ week_id }}">Meal Plan</h1>
+<p><h1 id="{{ week_id }}">Meal Plan</h1></p>
 </div>
 
 <div class="row col-12">
     <div class="col-6 meal-week-picker form-group">
-<!--         <form action="/meal-plan-week" class="go-to-week">
-            <select name="select-week-id">
-                <option disabled selected>Pick Week</option>
-                {% for w_date, w_id in week_list %}
-                <option value="{{ w_id }}">Week of {{ w_date.strftime('%-m/%d') }}
-                </option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-default" id="select-week-btn week-picker-btn" name="week-picker-btn">
-                <i class="glyphicon glyphicon-calendar"></i> Select Week</button>
-        </form> -->
         <form action="/create-new-meal-plan" method="post" class="form-inline">
             <div class="input-group">
                 <input type="text" class="form-control" id="weekpicker" required="required" name="picked-week" placeholder="Select Week"/>

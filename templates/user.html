@@ -3,6 +3,11 @@
 
 {% block title %} My Account {% endblock %}
 
+{% block style %} 
+<link rel="stylesheet" type="text/css" href="/static/css/user.css">
+{% endblock %}
+
+
 {% block content %}
 
 <div class="container">
@@ -16,22 +21,26 @@
 <div class="row">
     <div class="col-xs-4">
         <h2>Plan Your Meals</h2>
-        <p>Plan your weekly meal and get organized to get a head start for the week.</p>
-        <img src="/static/img/calendar.jpeg" alt="calendar" class="img-rounded" width="300" height="200">
-        <p><a href="/mealplan">Mealplan</a></p>
+        <a href="/mealplan">
+            <img src="/static/img/calendar.jpeg" alt="calendar" class="img-rounded" width="300" height="200"></a>
+        <br><br>
+        <p>Plan your weekly meals and get organized. Start for the week without worrying about what you are eating.</p>
     </div>
 
     <div class="col-xs-4">
         <h2>Organize Recipes</h2>
-        <p>Add, edit, or delete recipes from your recipe box. This is the place where you can manage all your recipes for your meal planning.
-        <img src="/static/img/meals.jpeg" alt="meals" class="img-rounded" width="300" height="200">
-        <p><a href="/recipes">Recipes</a></p>
+        <a href="/recipes">
+            <img src="/static/img/meals.jpeg" alt="meals" class="img-rounded" width="300" height="200"></a>
+        <br><br>
+        <p>Add, edit, or delete recipes from your recipe box. This is the place where you can manage all your recipes for your meal planning.</p>
     </div>
 
     <div class="col-xs-4">
         <h2>Shop For The Week</h2>
-        <img src="/static/img/grocery.jpeg" alt="grocery" class="img-rounded" width="300" height="200">
-        <p><a href="/shoppinglist">Shopping List</a></p>
+        <a href="/shoppinglist">
+            <img src="/static/img/grocery.jpeg" alt="grocery" class="img-rounded" width="300" height="200"></a>
+        <br><br>
+        <p>No need to think at the grocery store! Have all your grocery items listed from you meal plan that you create.</p>
     </div>
 </div>
 

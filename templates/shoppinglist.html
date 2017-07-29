@@ -3,28 +3,43 @@
 
 {% block title %} Shopping list {% endblock %}
 
+{% block style %} 
+<link rel="stylesheet" type="text/css" href="/static/css/shopping.css">
+{% endblock %}
+
+
 {% block content %}
 
 <div class="container">
-<div class="row col-xs-12">
+<div class="row col-xs-6">
 
 <h1>Shopping List for Week: {{ week_start_date.strftime('%-m/%d') }}</h1>
 
-<input type="button" id="email-list-btn" name="email-btn" value="Email Me List">
+<input type="button" id="email-list-btn" name="email-btn" value="Email Me List"
+class="btn btn-default">
 <input type="hidden" id="email" name="email" value="{{ email }}">
 <br>
 {% for category in shopping_list.keys() %}
-<strong> {{ category }} </strong>
-<br>
-{% for ingredient in shopping_list[category].values() %}
-<li class="ingredient-list-item">
-    {% if "url" in ingredient %} 
-        <img src="{{ ingredient['url'] }}" border="1" height="50" width="50">
-    {% endif %}
-    {{ ingredient["amount"] }} {{ ingredient["unit"] }} {{ ingredient["name"] }} 
-</li>
-{% endfor %}
-</ul>
+
+<h4> {{ category }} </h4>
+<table class="table">
+    <tbody>
+    {% for ingredient in shopping_list[category].values() %}
+        <tr class="ingredient-list-item">
+            <td class="col-xs-2">{% if "url" in ingredient %} 
+                <img src="{{ ingredient['url'] }}" border="1" height="50" width="50"
+                    class="img-rounded">
+                {% else %} <i class="glyphicon glyphicon-picture img-rounded" 
+                    height="50" width="50"><i>
+                {% endif %}
+            </td>
+            <td class="col-xs-1">{{ ingredient["amount"] }}</td>
+            <td class="col-xs-2">{{ ingredient["unit"] }}</td>
+            <td class="col-xs-3">{{ ingredient["name"] }}</td> 
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 {% endfor %}
 
 

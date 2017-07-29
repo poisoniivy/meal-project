@@ -47,7 +47,7 @@ def get_shopping_list(recipe_list):
     shopping_list = {}
 
     for recipe in recipe_list:
-        print recipe
+        # print recipe
         ingredient_info = get_ingredients_list(recipe.recipe_id)
 
         for ing_id, ing_name, cat_name, amount, unit, url in ingredient_info:
@@ -77,7 +77,7 @@ def get_shopping_list(recipe_list):
                 category_obj = {ing_id: ing_obj}
                 shopping_list[category_name] = category_obj
 
-    print shopping_list
+    # print shopping_list
     return shopping_list
 
 

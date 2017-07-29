@@ -11,11 +11,13 @@ from recipes import *
 from charts import *
 
 from datetime import date
+from flask.ext.bcrypt import Bcrypt
 
 import datetime
 
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "ABC"
@@ -49,6 +51,9 @@ def register_complete():
     """Completes the registration sign-up."""
     email = request.form.get("email")
     password = request.form.get("password")
+
+    hashed_pw = bcrypt.generate_password_hash(password)
+
     user_name = request.form.get("username")
 
     # import pdb; pdb.set_trace()
@@ -58,7 +63,7 @@ def register_complete():
         # If user name does not currently exist in database:
         if not User.query.filter(User.user_name==user_name).all():
             # Create new user if email and username both do not exist
-            new_user = User(email=email, password=password, user_name=user_name)
+            new_user = User(email=email, password=hashed_pw, user_name=user_name)
 
             db.session.add(new_user)
             db.session.commit()
@@ -79,15 +84,15 @@ def login():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    # print email, password
-
     # If the user email is not in the database
     if not User.query.filter(User.email==email).all():
         flash("User does not exist")
         return redirect("/")
     else:
         user = User.query.filter(User.email==email).one()
-        if password==user.password:
+        # if bcrypt.checkpw(password.encode('utf8'), user.password):
+        if bcrypt.check_password_hash(user.password, password):
+            # password==user.password:
             session['user_name'] = user.user_name
             flash("You are logged in")
             return redirect("/user/" + user.user_name)
@@ -449,7 +454,10 @@ def show_shopping_list():
         user_name = session['user_name']
         user = User.query.filter(User.user_name==user_name).one()
 
-        week_id = request.args.get("week_id")
+        if not request.args.get("week_id"):
+            week_id = get_week_id(user.user_id, this_week_start_date())
+        else:
+            week_id = request.args.get("week_id")
 
         week = Week.query.get(week_id)
         recipe_list = get_all_recipes_from_week(week_id)

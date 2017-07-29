@@ -18,6 +18,10 @@ td {
     text-align: center;
 }
 
+h1 {
+    color: #FC4A1A;
+}
+
 .recipe-dropdown {
     display: none;
 }

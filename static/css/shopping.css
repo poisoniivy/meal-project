@@ -1,0 +1,31 @@
+/*CSS for shopping list*/
+
+table, th, tr, td { 
+    border: none !important; 
+}
+
+td {
+    vertical-align: middle;
+}
+
+.glyphicon {
+    font-size: 2.0em;
+}
+
+h4 {
+    color: #4ABDAC;
+    text-decoration: underline;
+}
+
+.table>tbody>tr>td, 
+.table>tbody>tr>th, 
+.table>tfoot>tr>td, 
+.table>tfoot>tr>th, 
+.table>thead>tr>td, 
+.table>thead>tr>th {
+    vertical-align: middle;
+}
+
+.img-rounded {
+    margin: 0 auto;
+}

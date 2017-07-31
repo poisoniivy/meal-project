@@ -9,7 +9,7 @@ Eat.Plan.Love. is a meal planner app that allows users to plan meals for the wee
 
 ## Setup
 
-To Run Meal.Plan.Love, you will need:
+To Run Eat.Plan.Love, you will need:
 
 - PostgreSQL
 - Python 2.7
@@ -19,6 +19,7 @@ To have this app running on your local computer, please follow the below steps:
 Clone repository:
 ```
 $ git clone https://github.com/poisoniivy/meal-project.git
+```
 
 Create a virtual environment:
 ```

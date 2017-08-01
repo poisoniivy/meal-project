@@ -132,7 +132,13 @@ def show_meal_plan(start_date=this_week_start_date()):
         weeks = user.weeks
         week_list = [(w.start_date, w.week_id) for w in weeks]
 
-        # If the user does not have that week created, then mealplan
+        #if there are no weeks created, i.e. it is a new user
+        #create week for current week
+        if len(week_list) == 0:
+            create_new_week(user, start_date)
+            flash("Please fill in your meals.")
+
+        # mealplan displays most current week if there is a mealplan created
         # page shows the last created mealplan
         if get_week_id(user.user_id, start_date) == False:
             flash("You do not have a meal plan for this week.")
@@ -238,7 +244,7 @@ def create_new_meal_plan():
             return show_meal_plan(start_date)
         # Week does not exist, need to create it
         else:
-            create_new_week(start_date)
+            create_new_week(user, start_date)
             flash("Please fill in your meals.")
             return show_meal_plan(start_date)
     else:

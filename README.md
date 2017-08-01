@@ -46,3 +46,11 @@ $ python seed.py
 Run the app from the command line.
 ```
 $ python server.py
+```
+
+You can now navigate to 'localhost:5000/' to access Eat.Plan.Love.
+
+## Future Plans and Improvements
+
+- Add more testing
+- Updaate registration page

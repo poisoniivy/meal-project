@@ -32,11 +32,11 @@ def get_week_id(user_id, start_date):
                             Week.start_date==start_date).one().week_id
 
 
-def create_new_week(start_date):
+def create_new_week(user, start_date):
     """Creates a new week and also all the meals that are associated with week."""
 
     # user = User.query.filter(User.user_name==session['user_name']).one()
-    user = User.query.filter(User.user_id == 1).one()
+    # user = User.query.filter(User.user_id == 1).one()
 
     week = Week(user_id=user.user_id, start_date=start_date)
     all_days = meal_plan_days(start_date)

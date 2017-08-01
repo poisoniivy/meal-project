@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<div class="container">
+<div class="row col-xs-12">
+
     <h2>Register</h2>
     <form action="/register" method="POST">
       Email Address: <input type="email" name="email" id="email"><br>
@@ -8,5 +11,8 @@
       User Name: <input type="text" name="username" id="username"><br>
       <input type="submit" name="submit">
     </form>
+
+</div>
+</div>
 
 {% endblock %}
